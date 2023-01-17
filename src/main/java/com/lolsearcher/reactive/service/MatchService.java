@@ -31,8 +31,8 @@ public class MatchService {
         return riotGamesApi.getMatchIds(request.getPuuid(), request.getLastMatchId(), request.getMatchCount())
                 .flatMap(riotGamesApi::getMatches)
                 .onErrorContinue(this::handle429Exception)
-                .mapNotNull(this::changeRequestMatchDtoToEntity)
-                .map(match -> getResponseMatchDto(match, request));
+                .map(this::changeRequestMatchDtoToEntity)
+                .mapNotNull(match -> getResponseMatchDto(match, request));
     }
 
     private void handle429Exception(Throwable e, Object matchId) {
