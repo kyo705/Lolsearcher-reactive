@@ -1,0 +1,6 @@
+riot_api_key: ${riot_api_key}
+
+lolsearcher:
+  webclient:
+    kr-base-url: https://kr.api.riotgames.com
+    asia-base-url: https://asia.api.riotgames.com
