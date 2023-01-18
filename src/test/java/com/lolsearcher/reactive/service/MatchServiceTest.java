@@ -42,7 +42,7 @@ public class MatchServiceTest {
 
         List<String> matchIds = List.of("matchId1", "matchId2", "matchId3");
         given(riotGamesApi.getMatchIds(request.getPuuid(), request.getLastMatchId(), request.getMatchCount()))
-                .willReturn(Flux.just("matchId1", "matchId2", "matchId3"));
+                .willReturn(Flux.fromIterable(matchIds));
 
         matchIds.forEach(matchId -> given(riotGamesApi.getMatches(matchId))
                 .willReturn(Mono.just(MatchServiceTestSetUp.getApiMatchDto(matchId))));
@@ -68,7 +68,7 @@ public class MatchServiceTest {
 
         List<String> matchIds = List.of("matchId1", "matchId2", "matchId3");
         given(riotGamesApi.getMatchIds(request.getPuuid(), request.getLastMatchId(), request.getMatchCount()))
-                .willReturn(Flux.just("matchId1", "matchId2", "matchId3"));
+                .willReturn(Flux.fromIterable(matchIds));
 
         for(int i=0;i<matchIds.size();i++){
             String matchId = matchIds.get(i);
@@ -104,7 +104,7 @@ public class MatchServiceTest {
 
         List<String> matchIds = List.of("matchId1", "matchId2", "matchId3");
         given(riotGamesApi.getMatchIds(request.getPuuid(), request.getLastMatchId(), request.getMatchCount()))
-                .willReturn(Flux.just("matchId1", "matchId2", "matchId3"));
+                .willReturn(Flux.fromIterable(matchIds));
 
         for(int i=0;i<matchIds.size();i++){
             String matchId = matchIds.get(i);

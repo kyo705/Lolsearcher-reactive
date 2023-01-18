@@ -1,0 +1,12 @@
+riot_api_key: ${riot_api_key}
+
+lolsearcher:
+  webclient:
+    kr-base-url: https://kr.api.riotgames.com
+    asia-base-url: https://asia.api.riotgames.com
+  redis:
+    host: localhost
+    port: 17058
+  cache:
+    match:
+      ttl: 1  # 1sec
