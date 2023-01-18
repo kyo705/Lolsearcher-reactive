@@ -1,5 +1,6 @@
 package com.lolsearcher.reactive.api;
 
+import com.lolsearcher.reactive.annotation.ReactiveRedisCacheable;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .flatMapIterable(matchIds->recentMatchIds(matchIds, lastMatchId));
     }
 
+    @ReactiveRedisCacheable(key = "#matchId", ttl = "${lolsearcher.cache.match.ttl}")
     @Override
     public Mono<RiotGamesTotalMatchDto> getMatches(String matchId) {
 

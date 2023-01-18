@@ -39,6 +39,11 @@ public class MatchService {
 
         if(e instanceof WebClientResponseException){
             if(((WebClientResponseException) e).getStatusCode() == HttpStatus.TOO_MANY_REQUESTS){
+
+                String errorMessage = e.getLocalizedMessage();
+                int startIdx = errorMessage.indexOf("KR_");
+                int endIdx = errorMessage.indexOf("?");
+                matchId = errorMessage.substring(startIdx, endIdx);
                 log.info("너무 많은 요청으로 인해 MATCH_ID : {} 요청 실패", matchId);
                 return;
             }

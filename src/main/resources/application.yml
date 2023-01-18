@@ -4,3 +4,9 @@ lolsearcher:
   webclient:
     kr-base-url: https://kr.api.riotgames.com
     asia-base-url: https://asia.api.riotgames.com
+  redis:
+    host: localhost
+    port: 17058
+  cache:
+    match:
+      ttl: 3600  # 1h
