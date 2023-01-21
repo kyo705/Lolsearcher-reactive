@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.model.entity.match;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString(exclude = {"perkStats", "summaryMember"})
+@EqualsAndHashCode
 public class Perks implements Serializable {
 
     private Long id;

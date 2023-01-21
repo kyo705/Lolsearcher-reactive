@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.controller;
 
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
 import com.lolsearcher.reactive.model.output.match.MatchDto;
-import com.lolsearcher.reactive.service.MatchService;
+import com.lolsearcher.reactive.service.match.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,5 +1,7 @@
 package com.lolsearcher.reactive.model.entity.match;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString(exclude = "summaryMember")
+@EqualsAndHashCode
 public class DetailMember implements Serializable {
 
     private Long id;
@@ -26,6 +29,7 @@ public class DetailMember implements Serializable {
     private short wardKills;
     private short wardsPlaced;
 
+    @JsonBackReference
     private SummaryMember summaryMember;
 
     public void setSummaryMember(SummaryMember summaryMember) throws IllegalAccessException {

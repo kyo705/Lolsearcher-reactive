@@ -1,5 +1,8 @@
 package com.lolsearcher.reactive.model.entity.match;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString(exclude = "team")
+@EqualsAndHashCode
 public class SummaryMember implements Serializable {
 
     private Long id;
@@ -29,10 +33,13 @@ public class SummaryMember implements Serializable {
     private short item5;
     private short item6;
 
+    @JsonManagedReference
     private Perks perks;  /* 해당 게임의 특정 유저가 선택한 스펠, 룬 특성 */
 
+    @JsonManagedReference
     private DetailMember detailMember;
 
+    @JsonBackReference
     private Team team;
 
     public void setTeam(Team team) throws IllegalAccessException {

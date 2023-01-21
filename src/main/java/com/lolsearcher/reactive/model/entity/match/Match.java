@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.model.entity.match;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import static com.lolsearcher.reactive.constant.LolSearcherConstants.THE_NUMBER_
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class Match implements Serializable {
 
 	private Long id;

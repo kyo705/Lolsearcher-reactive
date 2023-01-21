@@ -1,4 +1,4 @@
-package com.lolsearcher.reactive.service;
+package com.lolsearcher.reactive.service.match;
 
 import com.lolsearcher.reactive.api.RiotGamesApi;
 import com.lolsearcher.reactive.constant.GameType;
@@ -12,6 +12,7 @@ import com.lolsearcher.reactive.model.factory.ResponseFactory;
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
 import com.lolsearcher.reactive.model.output.match.MatchDto;
+import com.lolsearcher.reactive.service.kafka.KafkaMessageProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import reactor.core.publisher.Flux;
 @Service
 public class MatchService {
 
+    private final KafkaMessageProducerService kafkaProducerService;
     private final RiotGamesApi riotGamesApi;
 
     public Flux<MatchDto> getRecentMatchDto(RequestMatchDto request) {
@@ -32,6 +34,7 @@ public class MatchService {
                 .flatMap(riotGamesApi::getMatches)
                 .onErrorContinue(this::handle429Exception)
                 .map(this::changeRequestMatchDtoToEntity)
+                .doOnNext(kafkaProducerService::sendSuccessMatch) //성공한 매치 데이터 kafka로 전송
                 .mapNotNull(match -> getResponseMatchDto(match, request));
     }
 
@@ -44,7 +47,9 @@ public class MatchService {
                 int startIdx = errorMessage.indexOf("KR_");
                 int endIdx = errorMessage.indexOf("?");
                 matchId = errorMessage.substring(startIdx, endIdx);
+
                 log.info("너무 많은 요청으로 인해 MATCH_ID : {} 요청 실패", matchId);
+                kafkaProducerService.sendFailMatchId((String)matchId);
                 return;
             }
         }

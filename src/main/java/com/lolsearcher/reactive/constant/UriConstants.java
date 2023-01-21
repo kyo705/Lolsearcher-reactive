@@ -9,5 +9,4 @@ public class UriConstants {
     public static final String RIOTGAMES_MATCHIDS_WITH_PUUID_URI = "/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}&api_key={key}";
     public static final String RIOTGAMES_MATCH_WITH_ID_URI = "/lol/match/v5/matches/{matchId}?api_key={key}";
     public static final String RIOTGAMES_INGAME_WITH_ID_URI = "/lol/spectator/v4/active-games/by-summoner/{id}?api_key={key}";
-
 }

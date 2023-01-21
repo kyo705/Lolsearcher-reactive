@@ -1,8 +1,9 @@
-package com.lolsearcher.reactive.service;
+package com.lolsearcher.reactive.service.match;
 
 import com.lolsearcher.reactive.api.RiotGamesApi;
 import com.lolsearcher.reactive.constant.GameType;
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
+import com.lolsearcher.reactive.service.kafka.KafkaMessageProducerService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,12 +26,14 @@ public class MatchServiceTest {
 
     @Mock
     private RiotGamesApi riotGamesApi;
+    @Mock
+    private KafkaMessageProducerService kafkaProducerService;
 
     private MatchService matchService;
 
     @BeforeEach
     public void setup(){
-        matchService = new MatchService(riotGamesApi);
+        matchService = new MatchService(kafkaProducerService, riotGamesApi);
     }
 
     @DisplayName("REST API 요청에 대한 응답이 모두 성공할 경우 정상적인 플로우가 흐른다.")

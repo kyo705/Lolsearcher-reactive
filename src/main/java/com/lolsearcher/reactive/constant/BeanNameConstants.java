@@ -3,8 +3,7 @@ package com.lolsearcher.reactive.constant;
 public class BeanNameConstants {
 
     public static final String REMAINING_MATCH_ID_PRODUCER_SERVICE_NAME = "remainingMatchIdProducerService";
-    public static final String FAIL_MATCH_ID_PRODUCER_SERVICE_NAME = "failMatchIdProducerService";
-    public static final String SUCCESS_MATCH_PRODUCER_SERVICE_NAME = "successMatchProducerService";
+
 
     public static final String KR_WEB_CLIENT_NAME = "koreaWebClient";
     public static final String ASIA_WEB_CLIENT_NAME = "asiaWebClient";

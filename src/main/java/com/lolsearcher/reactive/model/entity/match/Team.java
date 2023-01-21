@@ -1,9 +1,8 @@
 package com.lolsearcher.reactive.model.entity.match;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,14 +14,17 @@ import static com.lolsearcher.reactive.constant.LolSearcherConstants.THE_NUMBER_
 @Getter
 @Setter
 @ToString(exclude = "match")
+@EqualsAndHashCode
 public class Team implements Serializable {
 
     private Long id;
     private byte gameResult;    /*  0 : win,  1 : loss,  2 : draw  */
     private short teamPositionId; /* 100 : red, 200 : blue */
 
+    @JsonBackReference
     private Match match;
 
+    @JsonManagedReference
     private List<SummaryMember> members = new ArrayList<>(THE_NUMBER_OF_TEAM_MEMBERS);
 
     public void setMatch(Match match) throws IllegalAccessException {
