@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.api;
 
 import com.lolsearcher.reactive.annotation.ReactiveRedisCacheable;
+import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.lolsearcher.reactive.constant.BeanNameConstants.ASIA_WEB_CLIENT_NAME;
-import static com.lolsearcher.reactive.constant.UriConstants.RIOTGAMES_MATCHIDS_WITH_PUUID_URI;
-import static com.lolsearcher.reactive.constant.UriConstants.RIOTGAMES_MATCH_WITH_ID_URI;
+import static com.lolsearcher.reactive.constant.BeanNameConstants.KR_WEB_CLIENT_NAME;
+import static com.lolsearcher.reactive.constant.UriConstants.*;
 
 @RequiredArgsConstructor
 @Component
@@ -45,6 +46,17 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .uri(RIOTGAMES_MATCH_WITH_ID_URI, matchId, key)
                 .retrieve()
                 .bodyToMono(RiotGamesTotalMatchDto.class);
+    }
+
+    @ReactiveRedisCacheable(key = "#summonerId", ttl = "${lolsearcher.cache.ingame.ttl}")
+    @Override
+    public Mono<RiotGamesInGameDto> getInGame(String summonerId) {
+
+        return webclients.get(KR_WEB_CLIENT_NAME)
+                .get()
+                .uri(RIOTGAMES_INGAME_WITH_ID_URI, summonerId, key)
+                .retrieve()
+                .bodyToMono(RiotGamesInGameDto.class);
     }
 
     private List<String> recentMatchIds(String[] matchIds, String lastMatchId){

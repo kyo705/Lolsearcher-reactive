@@ -1,6 +1,14 @@
 package com.lolsearcher.reactive.model.factory;
 
 import com.lolsearcher.reactive.model.entity.match.*;
+import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameBannedChampionDto;
+import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
+import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameParticipantDto;
+import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGamePerksDto;
+import com.lolsearcher.reactive.model.output.ingame.InGameBannedChampionDto;
+import com.lolsearcher.reactive.model.output.ingame.InGameDto;
+import com.lolsearcher.reactive.model.output.ingame.InGameParticipantDto;
+import com.lolsearcher.reactive.model.output.ingame.InGamePerksDto;
 import com.lolsearcher.reactive.model.output.match.*;
 
 public class ResponseFactory {
@@ -105,6 +113,73 @@ public class ResponseFactory {
         }
 
         return  matchDto;
+    }
+
+    public static InGameDto getResponseInGameDtoFromRiotGamesDto(RiotGamesInGameDto riotGamesInGameDto){
+
+        if(riotGamesInGameDto == null){
+            return null;
+        }
+        InGameDto inGameDto = new InGameDto();
+        inGameDto.setGameId(riotGamesInGameDto.getGameId());
+        inGameDto.setGameType(riotGamesInGameDto.getGameType());
+        inGameDto.setGameStartTime(riotGamesInGameDto.getGameStartTime());
+        inGameDto.setMapId(riotGamesInGameDto.getMapId());
+        inGameDto.setGameLength(riotGamesInGameDto.getGameLength());
+        inGameDto.setPlatformId(riotGamesInGameDto.getPlatformId());
+        inGameDto.setGameMode(riotGamesInGameDto.getGameMode());
+        inGameDto.setGameQueueConfigId(riotGamesInGameDto.getGameQueueConfigId());
+
+        if(riotGamesInGameDto.getBannedChampions() != null){
+            for(RiotGamesInGameBannedChampionDto bannedChampionInfo : riotGamesInGameDto.getBannedChampions()){
+
+                InGameBannedChampionDto inGameBannedChampionDto = InGameBannedChampionDto.builder()
+                        .championId(bannedChampionInfo.getChampionId())
+                        .pickTurn(bannedChampionInfo.getPickTurn())
+                        .teamId(bannedChampionInfo.getTeamId())
+                        .build();
+
+                inGameDto.getBannedChampions().add(inGameBannedChampionDto);
+            }
+        }
+
+        if(riotGamesInGameDto.getParticipants() != null){
+            for(RiotGamesInGameParticipantDto riotGamesInGameParticipantDto : riotGamesInGameDto.getParticipants()){
+
+                InGameParticipantDto inGameParticipantDto = InGameParticipantDto.builder()
+                        .championId(riotGamesInGameParticipantDto.getChampionId())
+                        .profileIconId(riotGamesInGameParticipantDto.getProfileIconId())
+                        .bot(riotGamesInGameParticipantDto.isBot())
+                        .teamId(riotGamesInGameParticipantDto.getTeamId())
+                        .summonerName(riotGamesInGameParticipantDto.getSummonerName())
+                        .summonerId(riotGamesInGameParticipantDto.getSummonerId())
+                        .spell1Id(riotGamesInGameParticipantDto.getSpell1Id())
+                        .spell2Id(riotGamesInGameParticipantDto.getSpell2Id())
+                        .build();
+
+                inGameDto.getParticipants().add(inGameParticipantDto);
+
+                RiotGamesInGamePerksDto riotGamesInGamePerksDto = riotGamesInGameParticipantDto.getPerks();
+                if(riotGamesInGamePerksDto != null){
+                    InGamePerksDto inGamePerksDto = InGamePerksDto.builder()
+                            .perkStyle(riotGamesInGamePerksDto.getPerkStyle())
+                            .perkSubStyle(riotGamesInGamePerksDto.getPerkSubStyle())
+                            .mainPerk1(riotGamesInGamePerksDto.getPerkIds().get(0))
+                            .mainPerk2(riotGamesInGamePerksDto.getPerkIds().get(1))
+                            .mainPerk3(riotGamesInGamePerksDto.getPerkIds().get(2))
+                            .mainPerk4(riotGamesInGamePerksDto.getPerkIds().get(3))
+                            .subPerk1(riotGamesInGamePerksDto.getPerkIds().get(4))
+                            .subPerk2(riotGamesInGamePerksDto.getPerkIds().get(5))
+                            .statPerk1(riotGamesInGamePerksDto.getPerkIds().get(6))
+                            .statPerk2(riotGamesInGamePerksDto.getPerkIds().get(7))
+                            .statPerk3(riotGamesInGamePerksDto.getPerkIds().get(8))
+                            .build();
+
+                    inGameParticipantDto.setPerks(inGamePerksDto);
+                }
+            }
+        }
+        return inGameDto;
     }
 
 }
