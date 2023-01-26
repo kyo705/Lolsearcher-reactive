@@ -26,9 +26,8 @@ public class ReactiveRedisConfig {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
-            ReactiveRedisConnectionFactory factory
-    ){
+    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory){
+
         StringRedisSerializer keySerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer<Object> valueSerializer
                 = new Jackson2JsonRedisSerializer<>(Object.class);
