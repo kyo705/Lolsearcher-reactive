@@ -1,13 +1,12 @@
 package com.lolsearcher.reactive.model.input.front;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
 
-@Getter
-@Setter
+@AllArgsConstructor
+@Data
 public class RequestInGameDto {
 
     @NotEmpty

@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
-import static com.lolsearcher.reactive.constant.LolSearcherConstants.SEARCH_BAN_COUNT;
+import static com.lolsearcher.reactive.constant.LolSearcherConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,17 +24,17 @@ public class BanService {
 
     public Mono<String> inspect(ServerWebExchange exchange) {
 
-        if(exchange.getRequest().getHeaders().get("X-Forwarded-For") == null){
-            return Mono.just("invalid");
+        if(exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER) == null){
+            return Mono.just(INVALID);
         }
 
-        String ipAddress = exchange.getRequest().getHeaders().get("X-Forwarded-For").get(0);
+        String ipAddress = exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER).get(0);
 
         return reactiveRedisTemplate.opsForValue().get(ipAddress).flatMap(count->{
             if(count==null || (Integer)count< SEARCH_BAN_COUNT){
                 return Mono.empty();
             }else{
-                return Mono.just("invalid");
+                return Mono.just(INVALID);
             }
         });
     }
