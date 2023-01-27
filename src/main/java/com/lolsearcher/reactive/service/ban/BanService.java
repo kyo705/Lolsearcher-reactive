@@ -24,11 +24,11 @@ public class BanService {
 
     public Mono<String> inspect(ServerWebExchange exchange) {
 
-        if(exchange.getRequest().getRemoteAddress() == null){
+        if(exchange.getRequest().getHeaders().get("X-Forwarded-For") == null){
             return Mono.just("invalid");
         }
 
-        String ipAddress = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+        String ipAddress = exchange.getRequest().getHeaders().get("X-Forwarded-For").get(0);
 
         return reactiveRedisTemplate.opsForValue().get(ipAddress).flatMap(count->{
             if(count==null || (Integer)count< SEARCH_BAN_COUNT){
