@@ -29,9 +29,7 @@ public class SearchBanFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        String userIpAddress = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
-
-        return Mono.just(userIpAddress)
+        return Mono.just(exchange)
                 .flatMap(banService::inspect)
                 .flatMap(invalidUser->getUnAuthorizedException(exchange))
                 .switchIfEmpty(chain.filter(exchange));

@@ -1,9 +1,12 @@
 package com.lolsearcher.reactive.controller;
 
+import com.lolsearcher.reactive.config.redis.ReactiveRedisConfig;
+import com.lolsearcher.reactive.exception.handler.LolSearcherExceptionHandler;
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseBody;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseEntity;
 import com.lolsearcher.reactive.model.output.match.MatchDto;
+import com.lolsearcher.reactive.service.ban.BanService;
 import com.lolsearcher.reactive.service.match.MatchService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,7 +26,9 @@ import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(SpringExtension.class)
-@WebFluxTest({MatchController.class, ErrorResponseEntity.class})
+@Import({BanService.class, ReactiveRedisConfig.class, MatchController.class,
+        LolSearcherExceptionHandler.class, ErrorResponseEntity.class})
+@WebFluxTest(useDefaultFilters = false)
 public class MatchControllerTest {
 
     @Autowired
