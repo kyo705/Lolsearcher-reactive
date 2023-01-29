@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 import static com.lolsearcher.reactive.constant.BeanNameConstants.*;
+import static com.lolsearcher.reactive.constant.LolSearcherConstants.FORWARDED_HTTP_HEADER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -58,11 +59,11 @@ public class LolSearcherExceptionHandler {
 
     private void addAbusingCount(ServerWebExchange exchange) {
 
-        if(exchange.getRequest().getRemoteAddress() == null){
-            log.error("ip 주소가 없음 {}",exchange.getRequest());
+        if(exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER) == null){
+            log.error("ip 주소가 없음 {}", exchange.getRequest());
             return;
         }
-        String ipAddress = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+        String ipAddress = exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER).get(0);
 
         Mono.just(ipAddress)
                 .flatMap(banService::addAbusingCount)

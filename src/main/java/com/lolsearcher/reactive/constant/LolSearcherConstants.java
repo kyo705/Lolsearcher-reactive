@@ -23,5 +23,5 @@ public class LolSearcherConstants {
     public static final String MATCH_DATA_VERSION = "2";
     public static final String ALL = "all";
     public static final String FORWARDED_HTTP_HEADER = "X-Forwarded-For";
-    public static final String INVALID = "invalid";
+    public static final String VALID = "valid";
 }

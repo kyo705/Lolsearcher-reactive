@@ -1,7 +1,9 @@
 package com.lolsearcher.reactive.filter;
 
+import com.lolsearcher.reactive.config.security.SecurityConfig;
 import com.lolsearcher.reactive.controller.InGameController;
 import com.lolsearcher.reactive.exception.handler.LolSearcherExceptionHandler;
+import com.lolsearcher.reactive.exception.handler.SearchBanExceptionHandler;
 import com.lolsearcher.reactive.model.input.front.RequestInGameDto;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseBody;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseEntity;
@@ -27,8 +29,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
-@Import({SearchBanFilter.class, BanService.class, InGameController.class,
-        LolSearcherExceptionHandler.class, ErrorResponseEntity.class})
+@Import({SearchBanFilter.class, BanService.class, InGameController.class, SecurityConfig.class,
+        SearchBanExceptionHandler.class ,LolSearcherExceptionHandler.class, ErrorResponseEntity.class})
 @WebFluxTest(value = InGameController.class, useDefaultFilters = false)
 public class SearchBanFilterTest {
 
