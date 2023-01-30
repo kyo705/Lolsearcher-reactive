@@ -33,7 +33,7 @@ public class SearchBanExceptionHandler implements WebExceptionHandler {
 
         log.info("{} 에러 발생", ex.getMessage());
         if(!(ex instanceof NonAuthorizedSearchException)){
-            return Mono.empty();
+            return Mono.error(ex); //하위 exceptionHandler에서 처리하도록 error 리턴
         }
 
         ResponseEntity<ErrorResponseBody> responseEntity = errorResponseEntities.get(BeanNameConstants.FORBIDDEN_ENTITY_NAME);

@@ -25,11 +25,11 @@ public class BanService {
 
     public Mono<String> inspect(ServerWebExchange exchange) {
 
-        if(exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER) == null) {
+        if(exchange.getRequest().getRemoteAddress() == null) {
             log.error("클라이언트 IP 주소가 없음");
             return Mono.error(new NonAuthorizedSearchException(null));
         }
-        String ipAddress = exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER).get(0);
+        String ipAddress = exchange.getRequest().getRemoteAddress().getHostString();
 
         return reactiveRedisTemplate.opsForValue().get(ipAddress)
                 .flatMap(count->{
