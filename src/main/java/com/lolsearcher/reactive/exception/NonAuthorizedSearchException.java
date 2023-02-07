@@ -1,10 +1,11 @@
 package com.lolsearcher.reactive.exception;
 
-public class NonAuthorizedSearchException extends RuntimeException{
+public class NonAuthorizedSearchException extends NonAuthorizedException{
 
     private final String ipAddress;
 
     public NonAuthorizedSearchException(String ipAddress){
+        super("해당 IP 주소로는 접근 불가");
         this.ipAddress = ipAddress;
     }
 

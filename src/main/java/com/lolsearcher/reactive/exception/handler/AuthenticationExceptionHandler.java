@@ -2,8 +2,7 @@ package com.lolsearcher.reactive.exception.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lolsearcher.reactive.constant.BeanNameConstants;
-import com.lolsearcher.reactive.exception.NonAuthorizedSearchException;
+import com.lolsearcher.reactive.exception.NonAuthorizedException;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseBody;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +18,13 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
+import static com.lolsearcher.reactive.constant.BeanNameConstants.FORBIDDEN_ENTITY_NAME;
+
 @Order(-2)
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SearchBanExceptionHandler implements WebExceptionHandler {
+public class AuthenticationExceptionHandler implements WebExceptionHandler {
 
     private final ObjectMapper objectMapper;
     private final Map<String, ResponseEntity<ErrorResponseBody>> errorResponseEntities;
@@ -31,12 +32,13 @@ public class SearchBanExceptionHandler implements WebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
-        log.info("{} 에러 발생", ex.getMessage());
-        if(!(ex instanceof NonAuthorizedSearchException)){
+        if(!(ex instanceof NonAuthorizedException)){
             return Mono.error(ex); //하위 exceptionHandler에서 처리하도록 error 리턴
         }
 
-        ResponseEntity<ErrorResponseBody> responseEntity = errorResponseEntities.get(BeanNameConstants.FORBIDDEN_ENTITY_NAME);
+        log.info("{} 에러 발생", ex.getMessage());
+
+        ResponseEntity<ErrorResponseBody> responseEntity = errorResponseEntities.get(FORBIDDEN_ENTITY_NAME);
 
         exchange.getResponse().setStatusCode(responseEntity.getStatusCode());
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_NDJSON);
