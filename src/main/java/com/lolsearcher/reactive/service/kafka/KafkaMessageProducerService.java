@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.service.kafka;
 
 import com.lolsearcher.reactive.model.entity.match.Match;
+import com.lolsearcher.reactive.model.entity.rank.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
@@ -37,6 +38,17 @@ public class KafkaMessageProducerService {
                     // 1. 관리자에게 메일 전송 => 2. 파일 시스템에 저장
                     log.error(e.getMessage());
                     log.error("카프카에 '{}' 데이터 저장 실패", match);
+                })
+                .subscribe();
+    }
+
+    public void sendRank(Rank rank) {
+
+        ((ReactiveKafkaProducerTemplate<String, Rank>)kafkaProducerTemplates.get(RANK_PRODUCER_TEMPLATE))
+                .send(SUCCESS_MATCH_TOPIC, rank)
+                .doOnError(e->{
+                    log.error(e.getMessage());
+                    log.error("카프카에 '{}' 데이터 저장 실패", rank);
                 })
                 .subscribe();
     }

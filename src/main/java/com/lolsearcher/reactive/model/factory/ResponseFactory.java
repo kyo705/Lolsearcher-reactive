@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.model.factory;
 
 import com.lolsearcher.reactive.model.entity.match.*;
+import com.lolsearcher.reactive.model.entity.rank.Rank;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameBannedChampionDto;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameParticipantDto;
@@ -10,8 +11,24 @@ import com.lolsearcher.reactive.model.output.ingame.InGameDto;
 import com.lolsearcher.reactive.model.output.ingame.InGameParticipantDto;
 import com.lolsearcher.reactive.model.output.ingame.InGamePerksDto;
 import com.lolsearcher.reactive.model.output.match.*;
+import com.lolsearcher.reactive.model.output.rank.RankDto;
 
 public class ResponseFactory {
+
+    public static RankDto getRankDtoFromEntity(Rank rank) {
+
+        return RankDto.builder()
+                .summonerId(rank.getSummonerId())
+                .seasonId(rank.getSeasonId())
+                .queueType(rank.getQueueType())
+                .leagueId(rank.getLeagueId())
+                .tier(rank.getTier())
+                .rank(rank.getRank())
+                .leaguePoints(rank.getLeaguePoints())
+                .wins(rank.getWins())
+                .losses(rank.getLosses())
+                .build();
+    }
 
     public static MatchDto getResponseMatchDtoFromEntity(Match successMatch) {
 
@@ -181,5 +198,4 @@ public class ResponseFactory {
         }
         return inGameDto;
     }
-
 }

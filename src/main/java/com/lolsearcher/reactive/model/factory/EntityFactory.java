@@ -2,16 +2,34 @@ package com.lolsearcher.reactive.model.factory;
 
 import com.lolsearcher.reactive.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.model.entity.match.*;
+import com.lolsearcher.reactive.model.entity.rank.Rank;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesMatchDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesParticipantDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.perk.RiotGamesMatchPerkStatsDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.perk.RiotGamesMatchPerkStyleDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.team.RiotGamesTeamDto;
+import com.lolsearcher.reactive.model.input.riotgames.rank.RiotRankDto;
 
 import java.util.List;
 
 public class EntityFactory {
+
+    public static Rank getRankFromApiDto(RiotRankDto riotRankDto) {
+
+        return Rank.builder()
+                .summonerId(riotRankDto.getSummonerId())
+                .seasonId(LolSearcherConstants.CURRENT_SEASON_ID)
+                .queueType(riotRankDto.getQueueType())
+                .leagueId(riotRankDto.getLeagueId())
+                .tier(riotRankDto.getTier())
+                .rank(riotRankDto.getRank())
+                .leaguePoints(riotRankDto.getLeaguePoints())
+                .wins(riotRankDto.getWins())
+                .losses(riotRankDto.getLosses())
+                .build();
+    }
+
     public static Match getMatchFromApiDto(RiotGamesTotalMatchDto riotGamesTotalMatchDto) throws IllegalAccessException {
 
         RiotGamesMatchDto riotGamesMatchDto = riotGamesTotalMatchDto.getInfo();

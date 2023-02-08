@@ -3,6 +3,7 @@ package com.lolsearcher.reactive.api;
 import com.lolsearcher.reactive.annotation.ReactiveRedisCacheable;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
+import com.lolsearcher.reactive.model.input.riotgames.rank.RiotRankDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -57,6 +58,16 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .uri(RIOTGAMES_INGAME_WITH_ID_URI, summonerId, key)
                 .retrieve()
                 .bodyToMono(RiotGamesInGameDto.class);
+    }
+
+    @Override
+    public Flux<RiotRankDto> getRank(String summonerId) {
+
+        return webclients.get(KR_WEB_CLIENT_NAME)
+                .get()
+                .uri(RIOTGAMES_RANK_WITH_ID_URI, summonerId, key)
+                .retrieve()
+                .bodyToFlux(RiotRankDto.class);
     }
 
     private List<String> recentMatchIds(String[] matchIds, String lastMatchId){

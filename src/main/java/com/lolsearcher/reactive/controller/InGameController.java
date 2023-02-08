@@ -21,6 +21,7 @@ public class InGameController {
 
     @PostMapping(path = "/summoner/ingame")
     public Mono<InGameDto> getInGame(@RequestBody @Valid RequestInGameDto request){
+
         return inGameService.getInGame(request);
     }
 }

@@ -33,7 +33,7 @@ public class MatchService {
         return riotGamesApi.getMatchIds(request.getPuuid(), request.getLastMatchId(), request.getMatchCount())
                 .flatMap(riotGamesApi::getMatches)
                 .onErrorContinue(this::handle429Exception)
-                .map(this::changeRequestMatchDtoToEntity)
+                .mapNotNull(this::changeRequestMatchDtoToEntity)
                 .doOnNext(kafkaProducerService::sendSuccessMatch) //성공한 매치 데이터 kafka로 전송
                 .mapNotNull(match -> getResponseMatchDto(match, request));
     }

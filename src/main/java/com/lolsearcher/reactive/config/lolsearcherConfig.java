@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 @Configuration
 public class lolsearcherConfig {
+
     private final WebClient.Builder webclientBuilder;
 
     @Value("${lolsearcher.webclient.kr-base-url}")
