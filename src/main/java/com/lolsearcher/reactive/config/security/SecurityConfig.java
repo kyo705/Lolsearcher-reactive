@@ -61,7 +61,7 @@ public class SecurityConfig {
                 LolSearcherConstants.FORWARDED_HTTP_HEADER
         ));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST"));
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedOrigins(List.of(LolSearcherConstants.FRONT_SERVER_URI));
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();

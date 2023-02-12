@@ -53,10 +53,14 @@ public class JwtAuthenticationFilter implements WebFilter {
 
         String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
+        if(token==null){
+            return Mono.error(new NonAuthorizedException("토큰이 없습니다."));
+        }
+
         return Mono.justOrEmpty(token)
                 .doOnNext(jwtToken -> verifier.verify(jwtToken))
                 .onErrorResume(Exception.class, e -> Mono.empty())
-                .switchIfEmpty(Mono.error(new NonAuthorizedException("토큰이 없거나 만료되었습니다.")))
+                .switchIfEmpty(Mono.error(new NonAuthorizedException("토큰이 유효하지 않습니다.")))
                 .flatMap(jwtToken -> reactiveRedisTemplate.opsForValue().get(jwtToken))
                 .flatMap(result -> Mono.error(new NonAuthorizedException("해당 토큰은 이미 한 번 사용되었습니다.")))
                 .switchIfEmpty(Mono.just(token))

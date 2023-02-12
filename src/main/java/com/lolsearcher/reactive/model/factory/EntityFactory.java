@@ -3,19 +3,34 @@ package com.lolsearcher.reactive.model.factory;
 import com.lolsearcher.reactive.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.model.entity.match.*;
 import com.lolsearcher.reactive.model.entity.rank.Rank;
+import com.lolsearcher.reactive.model.entity.summoner.Summoner;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesMatchDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesParticipantDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.perk.RiotGamesMatchPerkStatsDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.perk.RiotGamesMatchPerkStyleDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.team.RiotGamesTeamDto;
-import com.lolsearcher.reactive.model.input.riotgames.rank.RiotRankDto;
+import com.lolsearcher.reactive.model.input.riotgames.rank.RiotGamesRankDto;
+import com.lolsearcher.reactive.model.input.riotgames.summoner.RiotGamesSummonerDto;
 
 import java.util.List;
 
 public class EntityFactory {
 
-    public static Rank getRankFromApiDto(RiotRankDto riotRankDto) {
+    public static Summoner getSummonerFromApiDto(RiotGamesSummonerDto riotGamesSummonerDto) {
+
+        return Summoner.builder()
+                .summonerId(riotGamesSummonerDto.getId())
+                .accountId(riotGamesSummonerDto.getAccountId())
+                .puuid(riotGamesSummonerDto.getPuuid())
+                .summonerName(riotGamesSummonerDto.getName())
+                .summonerLevel(riotGamesSummonerDto.getSummonerLevel())
+                .revisionDate(riotGamesSummonerDto.getRevisionDate())
+                .profileIconId(riotGamesSummonerDto.getProfileIconId())
+                .build();
+    }
+
+    public static Rank getRankFromApiDto(RiotGamesRankDto riotRankDto) {
 
         return Rank.builder()
                 .summonerId(riotRankDto.getSummonerId())

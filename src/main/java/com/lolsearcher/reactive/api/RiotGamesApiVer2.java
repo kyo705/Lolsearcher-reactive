@@ -3,7 +3,8 @@ package com.lolsearcher.reactive.api;
 import com.lolsearcher.reactive.annotation.ReactiveRedisCacheable;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
 import com.lolsearcher.reactive.model.input.riotgames.match.RiotGamesTotalMatchDto;
-import com.lolsearcher.reactive.model.input.riotgames.rank.RiotRankDto;
+import com.lolsearcher.reactive.model.input.riotgames.rank.RiotGamesRankDto;
+import com.lolsearcher.reactive.model.input.riotgames.summoner.RiotGamesSummonerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,38 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
     private final Map<String, WebClient> webclients;
 
     @Override
+    public Mono<RiotGamesSummonerDto> getSummonerByName(String name) {
+
+        return webclients.get(KR_WEB_CLIENT_NAME)
+                .get()
+                .uri(RIOTGAMES_SUMMONER_WITH_NAME_URI, name, key)
+                .retrieve()
+                .bodyToMono(RiotGamesSummonerDto.class);
+    }
+
+    @Override
+    public Mono<RiotGamesSummonerDto> getSummonerById(String summonerId) {
+
+        return webclients.get(KR_WEB_CLIENT_NAME)
+                .get()
+                .uri(RIOTGAMES_SUMMONER_WITH_ID_URI, summonerId, key)
+                .retrieve()
+                .bodyToMono(RiotGamesSummonerDto.class);
+    }
+
+    @Override
+    public Flux<RiotGamesRankDto> getRank(String summonerId) {
+
+        return webclients.get(KR_WEB_CLIENT_NAME)
+                .get()
+                .uri(RIOTGAMES_RANK_WITH_ID_URI, summonerId, key)
+                .retrieve()
+                .bodyToFlux(RiotGamesRankDto.class);
+    }
+
+    @Override
     public Flux<String> getMatchIds(String puuid, String lastMatchId, int count) {
+
         return webclients.get(ASIA_WEB_CLIENT_NAME)
                 .get()
                 .uri(RIOTGAMES_MATCHIDS_WITH_PUUID_URI, puuid, 0, count, key)
@@ -58,16 +90,6 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .uri(RIOTGAMES_INGAME_WITH_ID_URI, summonerId, key)
                 .retrieve()
                 .bodyToMono(RiotGamesInGameDto.class);
-    }
-
-    @Override
-    public Flux<RiotRankDto> getRank(String summonerId) {
-
-        return webclients.get(KR_WEB_CLIENT_NAME)
-                .get()
-                .uri(RIOTGAMES_RANK_WITH_ID_URI, summonerId, key)
-                .retrieve()
-                .bodyToFlux(RiotRankDto.class);
     }
 
     private List<String> recentMatchIds(String[] matchIds, String lastMatchId){

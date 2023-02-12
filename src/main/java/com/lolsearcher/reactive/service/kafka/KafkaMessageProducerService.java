@@ -2,6 +2,7 @@ package com.lolsearcher.reactive.service.kafka;
 
 import com.lolsearcher.reactive.model.entity.match.Match;
 import com.lolsearcher.reactive.model.entity.rank.Rank;
+import com.lolsearcher.reactive.model.entity.summoner.Summoner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
@@ -18,14 +19,39 @@ public class KafkaMessageProducerService {
 
     private final Map<String, ReactiveKafkaProducerTemplate> kafkaProducerTemplates;
 
+
+    public void sendSummoner(Summoner summoner) {
+
+        ((ReactiveKafkaProducerTemplate<String, Summoner>)kafkaProducerTemplates.get(SUMMONER_PRODUCER_TEMPLATE))
+                .send(SUMMONER_TOPIC, summoner)
+                .doOnError(e->{
+                    log.error(e.getMessage());
+                    log.error("카프카에 '{}' 데이터 저장 실패", summoner);
+                })
+                .subscribe();
+    }
+
+    public void sendRank(Rank rank) {
+
+        ((ReactiveKafkaProducerTemplate<String, Rank>)kafkaProducerTemplates.get(RANK_PRODUCER_TEMPLATE))
+                .send(RANK_TOPIC, rank)
+                .doOnError(e->{
+                    log.error(e.getMessage());
+                    log.error("카프카에 '{}' 데이터 저장 실패", rank);
+                })
+                .subscribe();
+    }
+
+
     public void sendFailMatchId(String failMatchId) {
 
         ((ReactiveKafkaProducerTemplate<String, String>) kafkaProducerTemplates.get(FAIL_MATCH_ID_PRODUCER_TEMPLATE))
                 .send(FAIL_MATCH_ID_TOPIC, failMatchId)
                 .doOnError(e->{
-                    // 1. 관리자에게 메일 전송 => 2. 파일 시스템에 저장
                     log.error(e.getMessage());
                     log.error("카프카에 '{}' 데이터 저장 실패", failMatchId);
+                    // 1. 관리자에게 메일 전송 => 2. 파일 시스템에 저장
+                    //fileRecordService.recordFailMatchId(failMatchId);
                 })
                 .subscribe();
     }
@@ -35,20 +61,10 @@ public class KafkaMessageProducerService {
         ((ReactiveKafkaProducerTemplate<String, Match>)kafkaProducerTemplates.get(SUCCESS_MATCH_PRODUCER_TEMPLATE))
                 .send(SUCCESS_MATCH_TOPIC, match)
                 .doOnError(e->{
-                    // 1. 관리자에게 메일 전송 => 2. 파일 시스템에 저장
                     log.error(e.getMessage());
                     log.error("카프카에 '{}' 데이터 저장 실패", match);
-                })
-                .subscribe();
-    }
-
-    public void sendRank(Rank rank) {
-
-        ((ReactiveKafkaProducerTemplate<String, Rank>)kafkaProducerTemplates.get(RANK_PRODUCER_TEMPLATE))
-                .send(SUCCESS_MATCH_TOPIC, rank)
-                .doOnError(e->{
-                    log.error(e.getMessage());
-                    log.error("카프카에 '{}' 데이터 저장 실패", rank);
+                    // 1. 관리자에게 메일 전송 => 2. 파일 시스템에 저장
+                    //fileRecordService.recordSuccessMatch(match);
                 })
                 .subscribe();
     }

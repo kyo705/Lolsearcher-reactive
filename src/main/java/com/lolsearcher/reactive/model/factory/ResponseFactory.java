@@ -2,6 +2,7 @@ package com.lolsearcher.reactive.model.factory;
 
 import com.lolsearcher.reactive.model.entity.match.*;
 import com.lolsearcher.reactive.model.entity.rank.Rank;
+import com.lolsearcher.reactive.model.entity.summoner.Summoner;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameBannedChampionDto;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameParticipantDto;
@@ -12,8 +13,20 @@ import com.lolsearcher.reactive.model.output.ingame.InGameParticipantDto;
 import com.lolsearcher.reactive.model.output.ingame.InGamePerksDto;
 import com.lolsearcher.reactive.model.output.match.*;
 import com.lolsearcher.reactive.model.output.rank.RankDto;
+import com.lolsearcher.reactive.model.output.summoner.SummonerDto;
 
 public class ResponseFactory {
+
+    public static SummonerDto getSummonerDtoFromEntity(Summoner summoner) {
+
+        return SummonerDto.builder()
+                .summonerId(summoner.getSummonerId())
+                .puuId(summoner.getPuuid())
+                .name(summoner.getSummonerName())
+                .summonerLevel(summoner.getSummonerLevel())
+                .profileIconId(summoner.getProfileIconId())
+                .build();
+    }
 
     public static RankDto getRankDtoFromEntity(Rank rank) {
 
