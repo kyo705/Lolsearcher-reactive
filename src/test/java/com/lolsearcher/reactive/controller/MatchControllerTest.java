@@ -7,7 +7,7 @@ import com.lolsearcher.reactive.model.output.error.ErrorResponseBody;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseEntity;
 import com.lolsearcher.reactive.model.output.match.MatchDto;
 import com.lolsearcher.reactive.service.ban.BanService;
-import com.lolsearcher.reactive.service.match.MatchService;
+import com.lolsearcher.reactive.service.search.match.MatchService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

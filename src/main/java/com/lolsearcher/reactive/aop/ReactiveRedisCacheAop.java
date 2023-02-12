@@ -36,7 +36,6 @@ public class ReactiveRedisCacheAop {
     @Around("@annotation(com.lolsearcher.reactive.annotation.ReactiveRedisCacheable)")
     public Object lookAsideReactiveRedisCache(ProceedingJoinPoint joinPoint){
 
-        //cache 조회 => 있으면 바로 리턴 없으면 메소드 실행 후 캐시에 저장
         Method method = cacheUtils.getMethod(joinPoint);
         Class<?> rawReturnType = method.getReturnType();
 
@@ -66,7 +65,7 @@ public class ReactiveRedisCacheAop {
                                     .collect(Collectors.toList())))
                     .switchIfEmpty(Flux.defer(() -> methodFluxResponseToCache(joinPoint, key, time)));
         }
-        throw new RuntimeException("ReactiveRedisCacheable : 매핑된 메소드의 리턴 타입이 Mono<?> 와 Flux<?> 외에는 지원되지 않습니다.");
+        throw new RuntimeException("ReactiveRedisCacheable : 매핑된 메소드의 리턴 타입이 Mono 와 Flux 외에는 지원되지 않습니다.");
     }
 
 

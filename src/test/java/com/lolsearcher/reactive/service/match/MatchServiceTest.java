@@ -4,6 +4,7 @@ import com.lolsearcher.reactive.api.RiotGamesApi;
 import com.lolsearcher.reactive.constant.GameType;
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
 import com.lolsearcher.reactive.service.kafka.KafkaMessageProducerService;
+import com.lolsearcher.reactive.service.search.match.MatchService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

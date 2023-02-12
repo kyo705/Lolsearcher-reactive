@@ -1,4 +1,4 @@
-package com.lolsearcher.reactive.service.ingame;
+package com.lolsearcher.reactive.service.search.ingame;
 
 import com.lolsearcher.reactive.api.RiotGamesApi;
 import com.lolsearcher.reactive.model.factory.ResponseFactory;

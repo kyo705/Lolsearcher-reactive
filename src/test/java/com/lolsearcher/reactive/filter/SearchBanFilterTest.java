@@ -9,7 +9,7 @@ import com.lolsearcher.reactive.model.output.error.ErrorResponseBody;
 import com.lolsearcher.reactive.model.output.error.ErrorResponseEntity;
 import com.lolsearcher.reactive.model.output.ingame.InGameDto;
 import com.lolsearcher.reactive.service.ban.BanService;
-import com.lolsearcher.reactive.service.ingame.InGameService;
+import com.lolsearcher.reactive.service.search.ingame.InGameService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

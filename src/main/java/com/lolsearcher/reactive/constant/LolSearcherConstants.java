@@ -25,4 +25,5 @@ public class LolSearcherConstants {
     public static final String FORWARDED_HTTP_HEADER = "X-Forwarded-For";
     public static final String VALID = "valid";
     public static final CharSequence RENEW_PATH = "/renew";
+    public static final String FRONT_SERVER_URI = "localhost:80";
 }

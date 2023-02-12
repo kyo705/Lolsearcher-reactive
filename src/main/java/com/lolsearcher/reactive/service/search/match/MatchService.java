@@ -1,4 +1,4 @@
-package com.lolsearcher.reactive.service.match;
+package com.lolsearcher.reactive.service.search.match;
 
 import com.lolsearcher.reactive.api.RiotGamesApi;
 import com.lolsearcher.reactive.constant.GameType;

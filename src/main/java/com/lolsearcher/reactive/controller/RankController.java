@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.controller;
 
 import com.lolsearcher.reactive.model.input.front.RequestRankDto;
 import com.lolsearcher.reactive.model.output.rank.RankDto;
-import com.lolsearcher.reactive.service.rank.RankService;
+import com.lolsearcher.reactive.service.search.rank.RankService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +18,7 @@ public class RankController {
 
     private final RankService rankService;
 
-    @PostMapping("/summoner/rank/renew")
+    @PostMapping("/renew/summoner/rank")
     public Mono<Map<String, RankDto>> getRankDto(@RequestBody @Valid RequestRankDto requestRankDto){
 
         return rankService.getRankDto(requestRankDto);
