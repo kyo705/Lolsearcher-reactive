@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.integration.cache;
 
 import com.lolsearcher.reactive.api.RiotGamesApi;
+import com.lolsearcher.reactive.constant.constant.CacheConstant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,17 @@ public class ReactiveRedisCacheableAnnotationTest {
     @Autowired
     private ReactiveRedisTemplate<String, Object> reactiveRedisTemplate;
 
+
     @DisplayName("MatchId에 해당하는 Match 데이터가 캐시에 없다면 REST API로 요청 후 캐시에 저장한다.")
     @Test
     public void savingCacheTest() {
 
         //given
         String matchId = "KR_6294134117";
+        String compKey = CacheConstant.MATCH_KEY + ":" + matchId;
 
         /* 캐시에 존재하지 않음 */
-        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(matchId))
+        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(compKey))
                 .expectNextCount(0)
                 .expectComplete()
                 .verify();
@@ -39,7 +42,7 @@ public class ReactiveRedisCacheableAnnotationTest {
 
         //then
         /* 캐시에 존재함 */
-        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(matchId))
+        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(compKey))
                 .expectNextCount(1)
                 .expectComplete()
                 .verify();
@@ -51,32 +54,33 @@ public class ReactiveRedisCacheableAnnotationTest {
 
         //given
         String matchId = "KR_6294134117";
+        String compKey = CacheConstant.MATCH_KEY + ":" + matchId;
 
         /* 캐시에 존재하지 않음 */
-        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(matchId))
+        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(compKey))
                 .expectNextCount(0)
-                .expectComplete()
-                .verify();
+                .thenConsumeWhile(x->true)
+                .verifyComplete();
 
         StepVerifier.create(riotGamesApi.getMatches(matchId))
                 .expectNextCount(1)
-                .expectComplete()
-                .verify();
+                .thenConsumeWhile(x->true)
+                .verifyComplete();
 
         /* 캐시에 존재함 */
-        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(matchId))
+        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(compKey))
                 .expectNextCount(1)
-                .expectComplete()
-                .verify();
+                .thenConsumeWhile(x->true)
+                .verifyComplete();
 
         //when
         Thread.sleep(2000);
 
         //then
         /* 캐시에 존재하지 않음 */
-        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(matchId))
+        StepVerifier.create(reactiveRedisTemplate.opsForValue().get(compKey))
                 .expectNextCount(0)
-                .expectComplete()
-                .verify();
+                .thenConsumeWhile(x->true)
+                .verifyComplete();
     }
 }

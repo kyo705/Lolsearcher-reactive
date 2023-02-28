@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface ReactiveRedisCacheable {
 
+    String name() default "";
+
     String key() default "";
 
     String ttl() default "60"; /* 1min */

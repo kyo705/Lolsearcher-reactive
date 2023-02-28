@@ -40,7 +40,11 @@ public class ReactiveRedisCacheAop {
         Class<?> rawReturnType = method.getReturnType();
 
         ReactiveRedisCacheable annotation = method.getAnnotation(ReactiveRedisCacheable.class);
+
+        String name = annotation.name();
         String key = cacheUtils.resolveKey(joinPoint, annotation.key());
+
+        String CompKey = cacheUtils.resolveCompKey(name, key);
         Duration time = cacheUtils.resolveTtl(annotation.ttl());
 
         TypeReference typeRefForMapper = cacheUtils.getTypeReference(method);
@@ -49,21 +53,21 @@ public class ReactiveRedisCacheAop {
 
             return reactiveRedisTemplate
                     .opsForValue()
-                    .get(key)
+                    .get(CompKey)
                     .map(cacheResponse -> objectMapper.convertValue(cacheResponse, typeRefForMapper))
-                    .switchIfEmpty(Mono.defer(() -> methodMonoResponseToCache(joinPoint, key, time)));
+                    .switchIfEmpty(Mono.defer(() -> methodMonoResponseToCache(joinPoint, CompKey, time)));
 
         } else if (rawReturnType.isAssignableFrom(Flux.class)) {
 
             return reactiveRedisTemplate
                     .opsForValue()
-                    .get(key)
+                    .get(CompKey)
                     .flatMapMany(cacheResponse -> Flux.fromIterable(
                             (List) ((List) cacheResponse)
                                     .stream()
-                                    .map(elem -> objectMapper.convertValue(elem, typeRefForMapper))
+                                    .map(cacheData -> objectMapper.convertValue(cacheData, typeRefForMapper))
                                     .collect(Collectors.toList())))
-                    .switchIfEmpty(Flux.defer(() -> methodFluxResponseToCache(joinPoint, key, time)));
+                    .switchIfEmpty(Flux.defer(() -> methodFluxResponseToCache(joinPoint, CompKey, time)));
         }
         throw new RuntimeException("ReactiveRedisCacheable : 매핑된 메소드의 리턴 타입이 Mono 와 Flux 외에는 지원되지 않습니다.");
     }
@@ -76,7 +80,7 @@ public class ReactiveRedisCacheAop {
                     .map(methodResponse -> {
                         reactiveRedisTemplate
                                 .opsForValue()
-                                .set(key, methodResponse, time)
+                                .set( key, methodResponse, time)
                                 .subscribe();
 
                         return methodResponse;

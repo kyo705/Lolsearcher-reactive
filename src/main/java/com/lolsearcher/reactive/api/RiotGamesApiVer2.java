@@ -16,6 +16,7 @@ import java.util.*;
 
 import static com.lolsearcher.reactive.constant.constant.BeanNameConstants.ASIA_WEB_CLIENT_NAME;
 import static com.lolsearcher.reactive.constant.constant.BeanNameConstants.KR_WEB_CLIENT_NAME;
+import static com.lolsearcher.reactive.constant.constant.CacheConstant.*;
 import static com.lolsearcher.reactive.constant.constant.UriConstants.*;
 
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
 
     private final Map<String, WebClient> webclients;
 
+    @ReactiveRedisCacheable(name = SUMMONER_KEY, key = "#name", ttl = "${lolsearcher.cache.summoner.ttl}")
     @Override
     public Mono<RiotGamesSummonerDto> getSummonerByName(String name) {
 
@@ -37,6 +39,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .bodyToMono(RiotGamesSummonerDto.class);
     }
 
+    @ReactiveRedisCacheable(name = SUMMONER_KEY, key = "#summonerId", ttl = "${lolsearcher.cache.summoner.ttl}")
     @Override
     public Mono<RiotGamesSummonerDto> getSummonerById(String summonerId) {
 
@@ -47,6 +50,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .bodyToMono(RiotGamesSummonerDto.class);
     }
 
+    @ReactiveRedisCacheable(name = RANK_KEY, key = "#summonerId", ttl = "${lolsearcher.cache.rank.ttl}")
     @Override
     public Flux<RiotGamesRankDto> getRank(String summonerId) {
 
@@ -69,7 +73,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .flatMapIterable(matchIds->recentMatchIds(matchIds, lastMatchId));
     }
 
-    @ReactiveRedisCacheable(key = "#matchId", ttl = "${lolsearcher.cache.match.ttl}")
+    @ReactiveRedisCacheable(name = MATCH_KEY, key = "#matchId", ttl = "${lolsearcher.cache.match.ttl}")
     @Override
     public Mono<RiotGamesTotalMatchDto> getMatches(String matchId) {
 
@@ -80,7 +84,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .bodyToMono(RiotGamesTotalMatchDto.class);
     }
 
-    @ReactiveRedisCacheable(key = "#summonerId", ttl = "${lolsearcher.cache.ingame.ttl}")
+    @ReactiveRedisCacheable(name = IN_GAME_KEY, key = "#summonerId", ttl = "${lolsearcher.cache.ingame.ttl}")
     @Override
     public Mono<RiotGamesInGameDto> getInGame(String summonerId) {
 

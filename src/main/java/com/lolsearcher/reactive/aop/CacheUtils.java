@@ -31,7 +31,7 @@ public class CacheUtils {
     }
 
     public TypeReference getTypeReference(Method method) {
-        return new TypeReference<Object>() {
+        return new TypeReference<>() {
             @Override
             public Type getType() {
                 return getMethodActualReturnType(method);
@@ -58,6 +58,14 @@ public class CacheUtils {
         throw new RuntimeException("어노테이션 key 설정 값이 잘못되었습니다. 다시 한 번 확인해주세요.");
     }
 
+    public String resolveCompKey(String name, String key) {
+
+        if(name.equals("")){
+            return key;
+        }
+        return name + ":" + key;
+    }
+
     public Duration resolveTtl(String ttl) {
 
         if(ttl.charAt(0) == '$'){
@@ -78,7 +86,4 @@ public class CacheUtils {
     private Type getMethodActualReturnType(Method method) {
         return ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
     }
-
-
-
 }
