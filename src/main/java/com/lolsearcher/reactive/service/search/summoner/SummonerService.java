@@ -6,7 +6,7 @@ import com.lolsearcher.reactive.model.factory.ResponseFactory;
 import com.lolsearcher.reactive.model.input.front.RequestSummonerDto;
 import com.lolsearcher.reactive.model.input.front.RequestUpdatingSummonerDto;
 import com.lolsearcher.reactive.model.output.summoner.SummonerDto;
-import com.lolsearcher.reactive.service.kafka.KafkaMessageProducerService;
+import com.lolsearcher.reactive.service.kafka.summoner.SummonerProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class SummonerService {
 
-    private final KafkaMessageProducerService kafkaProducerService;
+    private final SummonerProducerService summonerProducerService;
     private final RiotGamesApi riotGamesApi;
 
     public Mono<SummonerDto> getRenewSummoner(RequestSummonerDto requestSummonerDto) {
@@ -27,7 +27,7 @@ public class SummonerService {
 
         return riotGamesApi.getSummonerByName(name)
                 .map(EntityFactory::getSummonerFromApiDto)
-                .doOnNext(kafkaProducerService::sendSummoner)
+                .doOnNext(summonerProducerService::sendRecord)
                 .map(ResponseFactory::getSummonerDtoFromEntity);
     }
 
@@ -39,7 +39,7 @@ public class SummonerService {
         return Flux.fromStream(summonerIds.stream())
                 .flatMap(riotGamesApi::getSummonerById)
                 .map(EntityFactory::getSummonerFromApiDto)
-                .doOnNext(kafkaProducerService::sendSummoner)
+                .doOnNext(summonerProducerService::sendRecord)
                 .filter(summoner -> summoner.getSummonerName().equals(realSummonerName))
                 .map(ResponseFactory::getSummonerDtoFromEntity);
     }

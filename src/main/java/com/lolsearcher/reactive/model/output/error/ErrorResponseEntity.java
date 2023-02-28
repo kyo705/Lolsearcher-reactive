@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import static com.lolsearcher.reactive.constant.BeanNameConstants.*;
+import static com.lolsearcher.reactive.constant.constant.BeanNameConstants.*;
 
 @Configuration
 public class ErrorResponseEntity {

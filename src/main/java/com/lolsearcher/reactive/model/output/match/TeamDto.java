@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.model.output.match;
 
-import com.lolsearcher.reactive.constant.LolSearcherConstants;
+import com.lolsearcher.reactive.constant.constant.LolSearcherConstants;
 import lombok.Getter;
 import lombok.Setter;
 

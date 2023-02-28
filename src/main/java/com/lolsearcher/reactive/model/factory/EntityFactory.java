@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.model.factory;
 
-import com.lolsearcher.reactive.constant.LolSearcherConstants;
+import com.lolsearcher.reactive.constant.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.model.entity.match.*;
 import com.lolsearcher.reactive.model.entity.rank.Rank;
 import com.lolsearcher.reactive.model.entity.summoner.Summoner;

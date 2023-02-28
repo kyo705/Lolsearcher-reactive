@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lolsearcher.reactive.constant.LolSearcherConstants.THE_NUMBER_OF_TEAMS;
+import static com.lolsearcher.reactive.constant.constant.LolSearcherConstants.THE_NUMBER_OF_TEAMS;
 
 @Getter
 @Setter

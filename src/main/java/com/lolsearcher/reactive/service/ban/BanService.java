@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.service.ban;
 
-import com.lolsearcher.reactive.exception.NonAuthorizedSearchException;
+import com.lolsearcher.reactive.exception.exception.NonAuthorizedSearchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
-import static com.lolsearcher.reactive.constant.LolSearcherConstants.*;
+import static com.lolsearcher.reactive.constant.constant.LolSearcherConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor

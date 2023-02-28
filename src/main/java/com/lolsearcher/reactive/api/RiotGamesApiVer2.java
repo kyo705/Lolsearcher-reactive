@@ -12,13 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.lolsearcher.reactive.constant.BeanNameConstants.ASIA_WEB_CLIENT_NAME;
-import static com.lolsearcher.reactive.constant.BeanNameConstants.KR_WEB_CLIENT_NAME;
-import static com.lolsearcher.reactive.constant.UriConstants.*;
+import static com.lolsearcher.reactive.constant.constant.BeanNameConstants.ASIA_WEB_CLIENT_NAME;
+import static com.lolsearcher.reactive.constant.constant.BeanNameConstants.KR_WEB_CLIENT_NAME;
+import static com.lolsearcher.reactive.constant.constant.UriConstants.*;
 
 @RequiredArgsConstructor
 @Component
@@ -67,6 +65,7 @@ public class RiotGamesApiVer2 implements RiotGamesApi {
                 .uri(RIOTGAMES_MATCHIDS_WITH_PUUID_URI, puuid, 0, count, key)
                 .retrieve()
                 .bodyToMono(String[].class)
+                .doOnNext(strings -> Arrays.sort(strings, Comparator.reverseOrder()))
                 .flatMapIterable(matchIds->recentMatchIds(matchIds, lastMatchId));
     }
 
