@@ -1,11 +1,12 @@
 package com.lolsearcher.reactive.config.security;
 
-import com.lolsearcher.reactive.constant.LolSearcherConstants;
+import com.lolsearcher.reactive.constant.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import java.util.List;
 
 @Configuration
+@EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
@@ -31,14 +33,16 @@ public class SecurityConfig {
                                                   CorsConfigurationSource corsConfigurationSource,
                                                   ReactiveRedisTemplate<String, Object> redisTemplate){
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(redisTemplate);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
 
         return http.csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .anonymous()
+                .and()
                 .cors().configurationSource(corsConfigurationSource)
                 .and()
-                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange()
                 .pathMatchers("/**")
                 .permitAll()

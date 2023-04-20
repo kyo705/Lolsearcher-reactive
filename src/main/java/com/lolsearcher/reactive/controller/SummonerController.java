@@ -5,6 +5,7 @@ import com.lolsearcher.reactive.model.input.front.RequestUpdatingSummonerDto;
 import com.lolsearcher.reactive.model.output.summoner.SummonerDto;
 import com.lolsearcher.reactive.service.search.summoner.SummonerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,7 @@ public class SummonerController {
         return summonerService.getRenewSummoner(requestSummonerDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public Flux<SummonerDto> updateSummoners(@RequestBody @Valid RequestUpdatingSummonerDto request){
 
