@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.service.search.rank;
 
-import com.lolsearcher.reactive.api.RiotGamesApi;
+import com.lolsearcher.reactive.api.riot.RiotGamesApi;
 import com.lolsearcher.reactive.model.entity.rank.Rank;
 import com.lolsearcher.reactive.model.factory.EntityFactory;
 import com.lolsearcher.reactive.model.factory.ResponseFactory;

@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.integration.cache;
 
-import com.lolsearcher.reactive.api.RiotGamesApi;
+import com.lolsearcher.reactive.api.riot.RiotGamesApi;
 import com.lolsearcher.reactive.constant.constant.CacheConstant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

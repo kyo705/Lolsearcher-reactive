@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.unit.service.search.match;
 
-import com.lolsearcher.reactive.api.RiotGamesApi;
+import com.lolsearcher.reactive.api.riot.RiotGamesApi;
 import com.lolsearcher.reactive.constant.enumeration.GameType;
 import com.lolsearcher.reactive.model.input.front.RequestMatchDto;
 import com.lolsearcher.reactive.service.kafka.FacadeMatchRecordProducerService;

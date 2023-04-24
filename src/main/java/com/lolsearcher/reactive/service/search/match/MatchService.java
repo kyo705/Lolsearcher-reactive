@@ -1,6 +1,6 @@
 package com.lolsearcher.reactive.service.search.match;
 
-import com.lolsearcher.reactive.api.RiotGamesApi;
+import com.lolsearcher.reactive.api.riot.RiotGamesApi;
 import com.lolsearcher.reactive.constant.enumeration.GameType;
 import com.lolsearcher.reactive.constant.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.exception.exception.IncorrectDataVersionException;

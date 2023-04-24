@@ -1,7 +1,9 @@
 package com.lolsearcher.reactive.config.security;
 
+import com.lolsearcher.reactive.api.certification.CertificationApi;
 import com.lolsearcher.reactive.constant.constant.LolSearcherConstants;
 import com.lolsearcher.reactive.filter.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -18,10 +20,13 @@ import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
 public class SecurityConfig {
+
+    private final CertificationApi certificationApi;
 
     @Bean
     public ForwardedHeaderTransformer forwardedHeaderTransformer(){
@@ -33,20 +38,17 @@ public class SecurityConfig {
                                                   CorsConfigurationSource corsConfigurationSource,
                                                   ReactiveRedisTemplate<String, Object> redisTemplate){
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(certificationApi);
 
-        return http.csrf().disable()
+        return http
+                .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource).and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .anonymous()
-                .and()
-                .cors().configurationSource(corsConfigurationSource)
-                .and()
+                .anonymous().and()
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange()
-                .pathMatchers("/**")
-                .permitAll()
-                .and()
+                .pathMatchers("/**").permitAll().and()
                 .build();
     }
 

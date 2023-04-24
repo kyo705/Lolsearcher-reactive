@@ -1,4 +1,4 @@
-package com.lolsearcher.reactive.api;
+package com.lolsearcher.reactive.api.riot;
 
 import com.lolsearcher.reactive.annotation.ReactiveRedisCacheable;
 import com.lolsearcher.reactive.model.input.riotgames.ingame.RiotGamesInGameDto;
