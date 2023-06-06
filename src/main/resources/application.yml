@@ -1,12 +1,29 @@
-riot_api_key: ${riot_api_key}
+server:
+  port: 8081
 
 lolsearcher:
+  riot_api_key: ${riot_api_key}
+  jwt:
+    secret: gsgsg
   webclient:
     kr-base-url: https://kr.api.riotgames.com
     asia-base-url: https://asia.api.riotgames.com
   redis:
     host: localhost
-    port: 17058
+    port: 6379
   cache:
+    summoner:
+      ttl: 600
+    rank:
+      ttl: 3600
     match:
       ttl: 3600  # 1h
+    ingame:
+      ttl: 120 # 2min
+    abuser:
+      ttl: 1 # 1day
+
+logging:
+  file:
+    name: lolsearcher.log
+    path: C:\Users\ForYouCom\Desktop\LOLSEARCHER
