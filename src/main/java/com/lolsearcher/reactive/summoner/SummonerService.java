@@ -22,9 +22,8 @@ public class SummonerService {
                 .doOnNext(summonerMessageQueue::send);
     }
 
-    public Flux<SummonerDto> updateSameNameSummoners(SummonerUpdateRequest request){
+    public Flux<SummonerDto> updateSameNameSummoners(String realSummonerName, SummonerUpdateRequest request){
 
-        String realSummonerName = request.getRealSummonerName();
         List<String> summonerIds = request.getSummonerIds();
 
         return Flux.fromStream(summonerIds.stream())

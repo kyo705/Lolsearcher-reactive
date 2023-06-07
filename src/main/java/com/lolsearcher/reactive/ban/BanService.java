@@ -23,6 +23,11 @@ public class BanService {
 
     private final ReactiveRedisTemplate<String, Object> reactiveRedisTemplate;
 
+    public static String getKey(String ip) {
+
+        return BanConstant.SEARCH_BAN_CACHE_KEY + ip;
+    }
+
     public Mono<Void> inspect(ServerWebExchange exchange) {
 
         if(exchange.getRequest().getRemoteAddress() == null) {
@@ -32,7 +37,7 @@ public class BanService {
         String ipAddress = exchange.getRequest().getRemoteAddress().getHostString();
 
         return reactiveRedisTemplate.opsForValue()
-                .get(ipAddress)
+                .get(getKey(ipAddress))
                 .flatMap(count->{
                     if((Integer)count < SEARCH_BAN_COUNT){
                         return Mono.empty();
@@ -53,4 +58,5 @@ public class BanService {
                                 .flatMap(o->Mono.just(1L))
                 ));
     }
+
 }

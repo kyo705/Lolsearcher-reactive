@@ -16,36 +16,36 @@ public class KafkaSummonerMessageQueue implements SummonerMessageQueue {
     private final ReactiveKafkaProducerTemplate<String, SummonerDto> kafkaTemplate;
 
     @Override
-    public Mono<Void> send(String key, SummonerDto summoner) {
+    public void send(String key, SummonerDto summoner) {
 
-        return kafkaTemplate.send(SUMMONER_TOPIC, key, summoner)
+        kafkaTemplate.send(SUMMONER_TOPIC, key, summoner)
                 .flatMap(result -> {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, summoner);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, summoner);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, summoner);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}' ", key, summoner);
                     return Mono.error(new RuntimeException(e));
-                });
+                }).subscribe();
     }
 
     @Override
-    public Mono<Void> send(SummonerDto summoner) {
+    public void send(SummonerDto summoner) {
 
-        return kafkaTemplate.send(SUMMONER_TOPIC, summoner)
+        kafkaTemplate.send(SUMMONER_TOPIC, summoner)
                 .flatMap(result -> {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Value : '{}' 데이터가 카프카에 저장 성공", summoner);
+                        log.info("카프카에 저장 성공!! Value : '{}'", summoner);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Value : '{}' 데이터가 카프카에 저장 실패", summoner);
+                    log.error("카프카에 저장 실패... Value : '{}'", summoner);
                     return Mono.error(new RuntimeException(e));
-                });
+                }).subscribe();
     }
 }

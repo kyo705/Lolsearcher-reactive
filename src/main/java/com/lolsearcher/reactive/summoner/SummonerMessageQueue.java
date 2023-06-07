@@ -1,10 +1,8 @@
 package com.lolsearcher.reactive.summoner;
 
-import reactor.core.publisher.Mono;
-
 public interface SummonerMessageQueue {
 
-    Mono<Void> send(String key, SummonerDto summoner);
+    void send(String key, SummonerDto summoner);
 
-    Mono<Void> send(SummonerDto summoner);
+    void send(SummonerDto summoner);
 }
