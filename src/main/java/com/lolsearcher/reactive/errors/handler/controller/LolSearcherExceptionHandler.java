@@ -20,7 +20,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.Map;
 
 import static com.lolsearcher.reactive.config.ErrorResponseEntityConfig.*;
-import static com.lolsearcher.reactive.config.SecurityConfig.FORWARDED_HTTP_HEADER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -67,11 +66,11 @@ public class LolSearcherExceptionHandler {
 
     private void addAbusingCount(ServerWebExchange exchange) {
 
-        if(exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER) == null){
-            log.error("ip 주소가 없음 {}", exchange.getRequest());
+        if(exchange.getRequest().getRemoteAddress() == null){
+            log.error("ip 주소가 없음 ");
             return;
         }
-        String ipAddress = exchange.getRequest().getHeaders().get(FORWARDED_HTTP_HEADER).get(0);
+        String ipAddress = exchange.getRequest().getRemoteAddress().getHostName();
 
         Mono.just(ipAddress)
                 .flatMap(banService::addAbusingCount)

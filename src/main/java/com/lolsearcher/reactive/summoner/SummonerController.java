@@ -1,7 +1,6 @@
 package com.lolsearcher.reactive.summoner;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -22,15 +21,14 @@ public class SummonerController {
     private final SummonerService summonerService;
 
     @GetMapping(SUMMONER_BY_NAME_URI)
-    public Mono<SummonerDto> renewByName(
+    public Mono<SummonerDto> findByName(
             @PathVariable @NotBlank @Size(max = SUMMONER_NAME_MAX_LENGTH, min = SUMMONER_NAME_MIN_LENGTH) String name){
 
-        return summonerService.renewByName(name);
+        return summonerService.findByName(name);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(SUMMONER_BY_NAME_URI)
-    public Flux<SummonerDto> updateSummoners(
+    public Flux<SummonerDto> updateSameNameSummoners(
             @PathVariable @NotBlank @Size(max = SUMMONER_NAME_MAX_LENGTH, min = SUMMONER_NAME_MIN_LENGTH) String name,
             @RequestBody @Valid SummonerUpdateRequest request){
 

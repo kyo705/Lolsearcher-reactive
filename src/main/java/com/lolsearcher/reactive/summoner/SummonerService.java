@@ -15,7 +15,7 @@ public class SummonerService {
     private final SummonerMessageQueue summonerMessageQueue;
     private final SummonerAPI summonerAPI;
 
-    public Mono<SummonerDto> renewByName(String name) {
+    public Mono<SummonerDto> findByName(String name) {
 
         return summonerAPI.findByName(name)
                 .map(ResponseFactory::getSummonerDto)

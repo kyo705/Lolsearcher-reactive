@@ -2,6 +2,8 @@ server:
   port: 8081
 
 lolsearcher:
+  kafka:
+    bootstrap-server: localhost:9092
   riot_api_key: 12345
   webclient:
     kr-base-url: http://localhost:15678

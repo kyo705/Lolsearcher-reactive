@@ -5,6 +5,7 @@ import com.lolsearcher.reactive.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import java.util.List;
@@ -29,6 +31,12 @@ public class SecurityConfig {
     public static final String FORWARDED_HTTP_HEADER = "X-Forwarded-For";
 
     private final CertificationApi certificationApi;
+
+    @Order(-100)
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
+    }
 
     @Bean
     public ForwardedHeaderTransformer forwardedHeaderTransformer(){

@@ -2,6 +2,8 @@ server:
   port: 8081
 
 lolsearcher:
+  kafka:
+    bootstrap-server: ${bootstrap-server}
   riot_api_key: ${riot_api_key}
   jwt:
     secret: gsgsg

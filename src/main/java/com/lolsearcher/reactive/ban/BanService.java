@@ -50,13 +50,13 @@ public class BanService {
 
     public Mono<Long> addAbusingCount(String ipAddress) {
 
-        return reactiveRedisTemplate.opsForValue()
-                .get(ipAddress)
-                .flatMap(count-> reactiveRedisTemplate.opsForValue().increment(ipAddress))
-                .switchIfEmpty(Mono.defer(() ->
-                        reactiveRedisTemplate.opsForValue().set(ipAddress, 1, Duration.ofDays(ttl))
-                                .flatMap(o->Mono.just(1L))
-                ));
+        return Mono.just(getKey(ipAddress))
+                .flatMap(ip -> reactiveRedisTemplate.opsForValue().increment(ip))
+                .switchIfEmpty(
+                        Mono.just(getKey(ipAddress))
+                                .flatMap(ip -> reactiveRedisTemplate.opsForValue().set(ip, 1, Duration.ofDays(ttl)))
+                                .flatMap(flag -> flag ? Mono.just(1L) : Mono.error(new IllegalAccessException("Can't save in Redis Server")))
+                );
     }
 
 }
