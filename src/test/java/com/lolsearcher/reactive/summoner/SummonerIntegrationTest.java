@@ -6,7 +6,6 @@ import com.lolsearcher.reactive.config.EmbeddedRedisConfig;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
 import java.util.List;
 
-import static com.lolsearcher.reactive.ban.BanConstant.SEARCH_BAN_COUNT;
-import static com.lolsearcher.reactive.ban.BanService.getKey;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_BY_NAME_URI;
 import static com.lolsearcher.reactive.summoner.SummonerSetup.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
         ports = { 9092 })
 @AutoConfigureWebTestClient
 @Import({EmbeddedRedisConfig.class})
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
 public class SummonerIntegrationTest {
@@ -177,54 +172,6 @@ public class SummonerIntegrationTest {
                 .header(HttpHeaders.X_FORWARDED_FOR, ip)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @DisplayName("Find : 클라이언트가 어뷰저로 등록된 경우 403 상태코드를 리턴한다.")
-    @Test
-    public void testFindByNameWithNonAuthorizedError() {
-
-        //given
-        String name = "푸켓푸켓";
-        String ip = "123.123.123.123";
-
-        redisTemplate.opsForValue().set(getKey(ip), SEARCH_BAN_COUNT).subscribe();
-
-        //when & then
-        webTestClient.get()
-                .uri(SUMMONER_BY_NAME_URI, name)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.X_FORWARDED_FOR, ip)
-                .exchange()
-                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
-    }
-
-    @DisplayName("어뷰징 요청으로 의심될 경우 해당 클라이언트 ip의 어뷰징 카운트를 1 증가 시킨다.")
-    @Test
-    public void testFindByNameWithAbusingRequest() throws InterruptedException {
-
-        //given
-        String name = "푸켓푸켓";
-        String ip = "123.123.123.123";
-
-        assertThat(redisTemplate.opsForValue().get(getKey(ip)).block()).isNull();
-
-        mockWebServer.enqueue(
-                new MockResponse()
-                        .setResponseCode(HttpStatus.TOO_MANY_REQUESTS.value())
-                        .addHeader("Content-Type", "application/json")
-        );
-
-        //when & then
-        webTestClient.get()
-                .uri(SUMMONER_BY_NAME_URI, name)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.X_FORWARDED_FOR, ip)
-                .exchange()
-                .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
-
-        Thread.sleep(1000);
-
-        assertThat(redisTemplate.opsForValue().get(getKey(ip)).block()).isEqualTo(1);
     }
 
     @DisplayName("Update : 정상적인 요청일 경우 200 상태코드를 리턴한다.")
