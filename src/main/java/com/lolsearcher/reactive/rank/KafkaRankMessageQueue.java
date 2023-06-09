@@ -16,36 +16,38 @@ public class KafkaRankMessageQueue implements RankMessageQueue {
     private final ReactiveKafkaProducerTemplate<String, RankDto> kafkaTemplate;
 
     @Override
-    public Mono<Void> send(String key, RankDto rank) {
+    public void send(String key, RankDto rank) {
 
-        return kafkaTemplate.send(RANK_TOPIC, key, rank)
+        kafkaTemplate.send(RANK_TOPIC, key, rank)
                 .flatMap(result -> {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, rank);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, rank);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, rank);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}'", key, rank);
                     return Mono.error(new RuntimeException(e));
-                });
+                })
+                .subscribe();
     }
 
     @Override
-    public Mono<Void> send(RankDto rank) {
+    public void send(RankDto rank) {
 
-        return kafkaTemplate.send(RANK_TOPIC, rank)
+        kafkaTemplate.send(RANK_TOPIC, rank)
                 .flatMap(result -> {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Value : '{}' 데이터가 카프카에 저장 성공", rank);
+                        log.info("카프카에 저장 성공!! Value : '{}'", rank);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Value : '{}' 데이터가 카프카에 저장 실패", rank);
+                    log.error("카프카에 저장 실패... Value : '{}'", rank);
                     return Mono.error(new RuntimeException(e));
-                });
+                })
+                .subscribe();
     }
 }

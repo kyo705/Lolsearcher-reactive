@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.errors.handler.controller;
 
 import com.lolsearcher.reactive.ban.BanService;
+import com.lolsearcher.reactive.errors.exception.IllegalRiotGamesResponseDataException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionFailedException;
@@ -93,4 +94,13 @@ public class LolSearcherExceptionHandler {
 
         return errorResponseEntities.get(BAD_REQUEST_ENTITY_NAME);
     }
+
+    @ExceptionHandler({IllegalRiotGamesResponseDataException.class})
+    public ResponseEntity<ErrorResponseBody> handleExternalServerException(Exception e) {
+
+        log.error(e.getMessage());
+
+        return errorResponseEntities.get(BAD_GATEWAY_ENTITY_NAME);
+    }
+
 }

@@ -10,4 +10,8 @@ import java.io.Serializable;
 public class RiotGamesTotalMatchDto implements Serializable {
     private RiotGamesMatchMetadataDto metadata = new RiotGamesMatchMetadataDto();
     private RiotGamesMatchDto info = new RiotGamesMatchDto();
+
+    public void validate() {
+
+    }
 }

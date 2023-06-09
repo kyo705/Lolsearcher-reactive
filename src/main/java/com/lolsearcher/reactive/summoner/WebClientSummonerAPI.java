@@ -1,8 +1,10 @@
 package com.lolsearcher.reactive.summoner;
 
 import com.lolsearcher.reactive.cache.ReactiveRedisCacheable;
+import com.lolsearcher.reactive.errors.exception.IllegalRiotGamesResponseDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -37,6 +39,12 @@ public class WebClientSummonerAPI implements SummonerAPI {
                 .uri(RIOTGAMES_SUMMONER_WITH_ID_URI, summonerId, key)
                 .retrieve()
                 .bodyToMono(RiotGamesSummonerDto.class)
-                .doOnNext(RiotGamesSummonerDto::validate);
+                .doOnNext(RiotGamesSummonerDto::validate)
+                .onErrorResume(throwable -> {
+                    if(throwable instanceof  IllegalArgumentException || throwable instanceof DecodingException){
+                        return Mono.error(new IllegalRiotGamesResponseDataException(throwable.getMessage()));
+                    }
+                    return Mono.error(throwable);
+                });
     }
 }

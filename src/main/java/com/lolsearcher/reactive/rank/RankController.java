@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.rank;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import static com.lolsearcher.reactive.rank.RankConstant.RANK_URI;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MAX_LENGTH;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MIN_LENGTH;
 
+@Validated
 @RequiredArgsConstructor
 @RestController
 public class RankController {
@@ -21,10 +23,10 @@ public class RankController {
     private final RankService rankService;
 
     @GetMapping(RANK_URI)
-    public Mono<Map<RankTypeState, RankDto>> renewBySummonerId(
+    public Mono<Map<RankTypeState, RankDto>> findAll(
             @PathVariable @NotBlank @Size(max = SUMMONER_ID_MAX_LENGTH, min = SUMMONER_ID_MIN_LENGTH) String summonerId
     ){
 
-        return rankService.renewBySummonerId(summonerId);
+        return rankService.findAll(summonerId);
     }
 }

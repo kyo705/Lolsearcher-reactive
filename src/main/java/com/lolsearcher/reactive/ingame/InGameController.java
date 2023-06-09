@@ -3,6 +3,7 @@ package com.lolsearcher.reactive.ingame;
 import com.lolsearcher.reactive.ingame.dto.InGameDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import static com.lolsearcher.reactive.ingame.InGameConstant.INGAME_URI;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MAX_LENGTH;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MIN_LENGTH;
 
+@Validated
 @Slf4j
 @RequiredArgsConstructor
 @RestController

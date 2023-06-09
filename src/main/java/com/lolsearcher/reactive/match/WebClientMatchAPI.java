@@ -1,9 +1,11 @@
 package com.lolsearcher.reactive.match;
 
 import com.lolsearcher.reactive.cache.ReactiveRedisCacheable;
+import com.lolsearcher.reactive.errors.exception.IllegalRiotGamesResponseDataException;
 import com.lolsearcher.reactive.match.riotgamesdto.RiotGamesTotalMatchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -43,7 +45,14 @@ public class WebClientMatchAPI implements MatchAPI {
                 .get()
                 .uri(RIOTGAMES_MATCH_WITH_ID_URI, matchId, key)
                 .retrieve()
-                .bodyToMono(RiotGamesTotalMatchDto.class);
+                .bodyToMono(RiotGamesTotalMatchDto.class)
+                .doOnNext(RiotGamesTotalMatchDto::validate)
+                .onErrorResume(throwable -> {
+                    if(throwable instanceof  IllegalArgumentException || throwable instanceof DecodingException){
+                        return Mono.error(new IllegalRiotGamesResponseDataException(throwable.getMessage()));
+                    }
+                    return Mono.error(throwable);
+                });
     }
 
     private List<String> recentMatchIds(String[] matchIds, String lastMatchId){

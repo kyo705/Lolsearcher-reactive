@@ -20,24 +20,23 @@ public class RankService {
     private final RankMessageQueue rankMessageQueue;
     private final RankAPI rankAPI;
 
-    public Mono<Map<RankTypeState, RankDto>> renewBySummonerId(String summonerId) {
+    public Mono<Map<RankTypeState, RankDto>> findAll(String summonerId) {
 
-        Set<RankTypeState> set = new HashSet<>();
+        Set<String> set = new HashSet<>();
 
-        return rankAPI.findAllBySummonerId(summonerId)
-                .map(ResponseFactory::getRankDto)
-                .doOnNext(rank -> {
+        return rankAPI.findAll(summonerId)
+                .flatMap(rank -> {
                     if(set.contains(rank.getQueueType())) {
-                        throw new NonUniqueRankTypeException(rank.getQueueType());
+                        return Mono.error(new NonUniqueRankTypeException(rank.getQueueType()));
                     }
                     set.add(rank.getQueueType());
+
+                    if(set.size() > THE_NUMBER_OF_RANK_TYPE) {
+                        return Mono.error(new IncorrectSummonerRankSizeException(set.size()));
+                    }
+                    return Mono.just(ResponseFactory.getRankDto(rank));
                 })
                 .collectMap(RankDto::getQueueType, rank -> rank)
-                .doOnNext(map -> {
-                    if(map.size() > THE_NUMBER_OF_RANK_TYPE) {
-                        throw new IncorrectSummonerRankSizeException(map.size());
-                    }
-                })
-                .doOnNext(map -> map.values().stream().peek(rankMessageQueue::send));
+                .doOnSuccess(map -> map.values().forEach(rankMessageQueue::send));
     }
 }

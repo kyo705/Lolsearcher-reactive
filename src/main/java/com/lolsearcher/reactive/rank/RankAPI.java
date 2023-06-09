@@ -4,5 +4,5 @@ import reactor.core.publisher.Flux;
 
 public interface RankAPI {
 
-    Flux<RiotGamesRankDto> findAllBySummonerId(String summonerId);
+    Flux<RiotGamesRankDto> findAll(String summonerId);
 }
