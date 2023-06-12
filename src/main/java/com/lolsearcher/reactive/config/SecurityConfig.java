@@ -1,16 +1,12 @@
 package com.lolsearcher.reactive.config;
 
-import com.lolsearcher.reactive.authentication.CertificationApi;
-import com.lolsearcher.reactive.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,6 +17,8 @@ import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import java.util.List;
 
+import static com.google.common.net.HttpHeaders.X_FORWARDED_FOR;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableReactiveMethodSecurity
@@ -28,9 +26,6 @@ import java.util.List;
 public class SecurityConfig {
 
     public static final String FRONT_SERVER_URI = "localhost:80";
-    public static final String FORWARDED_HTTP_HEADER = "X-Forwarded-For";
-
-    private final CertificationApi certificationApi;
 
     @Order(-100)
     @Bean
@@ -44,11 +39,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
-                                                  CorsConfigurationSource corsConfigurationSource,
-                                                  ReactiveRedisTemplate<String, Object> redisTemplate){
-
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(certificationApi);
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, CorsConfigurationSource corsConfigurationSource){
 
         return http
                 .csrf().disable()
@@ -56,7 +47,6 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .anonymous().and()
-                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange()
                 .pathMatchers("/**").permitAll().and()
                 .build();
@@ -74,7 +64,7 @@ public class SecurityConfig {
                 HttpHeaders.ACCEPT,
                 HttpHeaders.ACCEPT_ENCODING,
                 HttpHeaders.USER_AGENT,
-                FORWARDED_HTTP_HEADER
+                X_FORWARDED_FOR
         ));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST"));
         corsConfiguration.setAllowedOrigins(List.of(FRONT_SERVER_URI));

@@ -1,4 +1,4 @@
-package com.lolsearcher.reactive.errors.handler.controller;
+package com.lolsearcher.reactive.errors.handler;
 
 import com.lolsearcher.reactive.ban.BanService;
 import com.lolsearcher.reactive.errors.exception.IllegalRiotGamesResponseDataException;
