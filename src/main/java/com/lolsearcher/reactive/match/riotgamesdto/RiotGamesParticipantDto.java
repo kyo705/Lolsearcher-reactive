@@ -3,8 +3,16 @@ package com.lolsearcher.reactive.match.riotgamesdto;
 import com.lolsearcher.reactive.match.riotgamesdto.perk.RiotGamesMatchPerksDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MAX_LENGTH;
+import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MIN_LENGTH;
+import static com.lolsearcher.reactive.utils.RiotGamesDataCacheKeyUtils.*;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Getter
 @Setter
@@ -114,4 +122,42 @@ public class RiotGamesParticipantDto implements Serializable {
     private Short wardsPlaced;
     private boolean win;
 
+    public Mono<RiotGamesParticipantDto> validate(ReactiveRedisTemplate<String, Object> template) {
+
+        return Mono.just("DUMMY")
+                .doOnNext(obj -> checkArgument(isNotEmpty(summonerId) && summonerId.length() >= SUMMONER_ID_MIN_LENGTH && summonerId.length() <= SUMMONER_ID_MAX_LENGTH,
+                        String.format("summonerId must be provided and its length must be between %s and %s", SUMMONER_ID_MIN_LENGTH, SUMMONER_ID_MAX_LENGTH)
+                ))
+                .doOnNext(obj -> checkArgument(champLevel >=1 && champLevel <= 18, "championLevel must be between 1 and 18"))
+                .doOnNext(obj -> checkArgument(neutralMinionsKilled >= 0, "minionKills must be positive"))
+                .doOnNext(obj -> checkArgument(totalMinionsKilled >= 0, "minionKills must be positive"))
+                .doOnNext(obj -> checkArgument(kills >= 0, "kills must be positive"))
+                .doOnNext(obj -> checkArgument(deaths >= 0, "deaths must be positive"))
+                .doOnNext(obj -> checkArgument(assists >= 0, "assists must be positive"))
+                .doOnNext(obj -> checkArgument(goldEarned >= 0, "goldEarned must be positive"))
+                .doOnNext(obj -> checkArgument(goldSpent >= 0, "goldSpent must be positive"))
+                .doOnNext(obj -> checkArgument(totalDamageDealt >= 0, "totalDamageDealt must be positive"))
+                .doOnNext(obj ->  checkArgument(totalDamageDealtToChampions >= 0, "totalDamageDealtToChampions must be positive"))
+                .doOnNext(obj -> checkArgument(totalDamageShieldedOnTeammates >= 0, "totalDamageShieldedOnTeammates must be positive"))
+                .doOnNext(obj -> checkArgument(totalDamageTaken >= 0, "totalDamageTaken must be positive"))
+                .doOnNext(obj -> checkArgument(timeCCingOthers >= 0, "timeCCingOthers must be positive"))
+                .doOnNext(obj -> checkArgument(totalHeal >= 0, "totalHeal must be positive"))
+                .doOnNext(obj -> checkArgument(totalHealsOnTeammates >= 0, "totalHealsOnTeammates must be positive"))
+                .doOnNext(obj -> checkArgument(visionWardsBoughtInGame >= 0, "detectorWardPurchased must be positive"))
+                .doOnNext(obj -> checkArgument(detectorWardsPlaced >= 0, "detectorWardsPlaced must be positive"))
+                .doOnNext(obj -> checkArgument(wardsKilled >= 0, "wardKills must be positive"))
+                .doOnNext(obj -> checkArgument(wardsPlaced >= 0, "wardsPlaced must be positive"))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item0)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item1)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item2)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item3)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item4)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item5)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item6)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getChampionKey(championId)).switchIfEmpty(Mono.error(new IllegalArgumentException("championId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getSpellKey(summoner1Id)).switchIfEmpty(Mono.error(new IllegalArgumentException("spellId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getSpellKey(summoner2Id)).switchIfEmpty(Mono.error(new IllegalArgumentException("spellId must be in permitted boundary"))))
+                .flatMap(obj -> perks.validate(template))
+                .map(obj -> this);
+    }
 }

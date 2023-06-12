@@ -2,6 +2,7 @@ package com.lolsearcher.reactive.match.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static com.lolsearcher.reactive.match.MatchConstant.THE_NUMBER_OF_MEMBER;
 
+@ToString
 @Getter
 @Setter
 public class MatchDto {

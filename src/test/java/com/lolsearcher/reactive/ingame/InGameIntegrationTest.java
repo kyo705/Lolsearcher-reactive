@@ -1,6 +1,7 @@
 package com.lolsearcher.reactive.ingame;
 
 import com.lolsearcher.reactive.config.EmbeddedRedisConfig;
+import com.lolsearcher.reactive.config.GeneralSetup;
 import com.lolsearcher.reactive.ingame.dto.InGameDto;
 import com.lolsearcher.reactive.ingame.dto.InGameParticipantDto;
 import okhttp3.mockwebserver.MockResponse;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 import static com.google.common.net.HttpHeaders.X_FORWARDED_FOR;
 import static com.lolsearcher.reactive.ingame.InGameConstant.INGAME_URI;
 import static com.lolsearcher.reactive.ingame.InGameSetup.getValidRiotGamesInGameDto;
-import static com.lolsearcher.reactive.ingame.InGameSetup.setupCache;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -35,7 +35,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Import({EmbeddedRedisConfig.class})
 @ActiveProfiles("test")
 @SpringBootTest
-public class InGameIntegrationTest {
+public class InGameIntegrationTest extends GeneralSetup {
 
     private static MockWebServer mockWebServer;
     @Autowired

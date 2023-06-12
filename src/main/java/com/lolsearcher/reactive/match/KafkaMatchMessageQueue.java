@@ -27,11 +27,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Value : '{}' 데이터가 카프카에 저장 성공", failMatchId);
+                        log.info("카프카에 저장 성공!! Value : '{}'", failMatchId);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Value : '{}' 데이터가 카프카에 저장 실패", failMatchId);
+                    log.error("카프카에 저장 실패... Value : '{}'", failMatchId);
                     return Mono.error(new RuntimeException(e));
                 });
     }
@@ -45,11 +45,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, failMatchId);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, failMatchId);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, failMatchId);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}'", key, failMatchId);
                     return Mono.error(new RuntimeException(e));
                 });
     }
@@ -63,11 +63,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Value : '{}' 데이터가 카프카에 저장 성공", successMatch);
+                        log.info("카프카에 저장 성공!! Value : '{}'", successMatch);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Value : '{}' 데이터가 카프카에 저장 실패", successMatch);
+                    log.error("카프카에 저장 실패... Value : '{}'", successMatch);
                     return Mono.error(new RuntimeException(e));
                 });
     }
@@ -81,11 +81,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, successMatch);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, successMatch);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, successMatch);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}'", key, successMatch);
                     return Mono.error(new RuntimeException(e));
                 });
     }
@@ -99,11 +99,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, remainMatchIdRange);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, remainMatchIdRange);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, remainMatchIdRange);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}'", key, remainMatchIdRange);
                     return Mono.error(new RuntimeException(e));
                 });
     }
@@ -117,11 +117,11 @@ public class KafkaMatchMessageQueue implements MatchMessageQueue {
                     Exception e = result.exception();
 
                     if(e == null){
-                        log.info("Key : '{}', Value : '{}' 데이터가 카프카에 저장 성공", key, lastMatchId);
+                        log.info("카프카에 저장 성공!! Key : '{}', Value : '{}'", key, lastMatchId);
                         return Mono.empty();
                     }
                     log.error(e.getMessage());
-                    log.error("Key : '{}', Value : '{}' 데이터가 카프카에 저장 실패", key, lastMatchId);
+                    log.error("카프카에 저장 실패... Key : '{}', Value : '{}'", key, lastMatchId);
                     return Mono.error(new RuntimeException(e));
                 });
     }

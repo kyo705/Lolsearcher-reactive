@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface MatchAPI {
 
-    Flux<String> findMatchIds(String puuid, String lastMatchId, int count);
+    Flux<String> findMatchIds(String puuid, String lastMatchId, int count, Integer queueId);
     Mono<RiotGamesTotalMatchDto> findMatch(String matchId);
 }

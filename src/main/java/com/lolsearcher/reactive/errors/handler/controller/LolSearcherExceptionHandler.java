@@ -8,10 +8,10 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ServerWebExchange;
@@ -40,7 +40,7 @@ public class LolSearcherExceptionHandler {
 
             addAbusingCount(exchange);
 
-            log.error("클라이언트의 요청에 해당하는 소환사 정보가 없음");
+            log.error("클라이언트의 요청에 해당하는 적절한 데이터가 없음");
             return errorResponseEntities.get(NOT_FOUND_ENTITY_NAME);
         }
         else if (e.getStatusCode().equals(HttpStatus.TOO_MANY_REQUESTS)) {
@@ -85,7 +85,7 @@ public class LolSearcherExceptionHandler {
             ConversionFailedException.class,		    // enum type data bind 실패시
             IllegalArgumentException.class,             // custom으로 파라미터 검사 실패 시
             MethodArgumentTypeMismatchException.class,
-            BindException.class,						// modelAttribute 바인딩 실패 시
+            WebExchangeBindException.class,			    // modelAttribute 바인딩 실패 시
             HttpMessageNotReadableException.class
     })
     public ResponseEntity<ErrorResponseBody> handleInvalidArgumentException(Exception e) {
@@ -103,4 +103,12 @@ public class LolSearcherExceptionHandler {
         return errorResponseEntities.get(BAD_GATEWAY_ENTITY_NAME);
     }
 
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorResponseBody> anyException(Exception e) {
+
+        log.error(e.getClass().getName());
+        log.error(e.getMessage());
+
+        return errorResponseEntities.get(INTERNAL_SERVER_ERROR_ENTITY_NAME);
+    }
 }
