@@ -7,7 +7,7 @@ public class MatchConstant {
     public static final String PUUID_URI_PARAM_START = "start";
     public static final String PUUID_URI_PARAM_QUEUE = "queue";
     public static final String PUUID_URI_PARAM_COUNT = "count";
-    public static final String RIOT_GAMES_PARAM_KEY = "key";
+    public static final String RIOT_GAMES_PARAM_KEY = "api_key";
 
     public static final String RIOTGAMES_MATCH_WITH_ID_URI = "/lol/match/v5/matches/{matchId}?api_key={key}";
     public static final String FAIL_MATCH_ID_TEMPLATE = "failMatchIdTemplate";

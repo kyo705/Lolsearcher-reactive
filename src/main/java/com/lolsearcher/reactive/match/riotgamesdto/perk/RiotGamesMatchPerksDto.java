@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.match.riotgamesdto.perk;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ public class RiotGamesMatchPerksDto implements Serializable {
 	private RiotGamesMatchPerkStatsDto statPerks;
 	private List<RiotGamesMatchPerkStyleDto> styles;
 
-    public Mono<RiotGamesMatchPerksDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesMatchPerksDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just("DUMMY")
                 .flatMap(obj -> statPerks.validate(template))

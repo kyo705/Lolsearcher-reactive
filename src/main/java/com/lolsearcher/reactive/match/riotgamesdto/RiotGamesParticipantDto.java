@@ -3,7 +3,7 @@ package com.lolsearcher.reactive.match.riotgamesdto;
 import com.lolsearcher.reactive.match.riotgamesdto.perk.RiotGamesMatchPerksDto;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -122,7 +122,7 @@ public class RiotGamesParticipantDto implements Serializable {
     private Short wardsPlaced;
     private boolean win;
 
-    public Mono<RiotGamesParticipantDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesParticipantDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just("DUMMY")
                 .doOnNext(obj -> checkArgument(isNotEmpty(summonerId) && summonerId.length() >= SUMMONER_ID_MIN_LENGTH && summonerId.length() <= SUMMONER_ID_MAX_LENGTH,
@@ -147,13 +147,13 @@ public class RiotGamesParticipantDto implements Serializable {
                 .doOnNext(obj -> checkArgument(detectorWardsPlaced >= 0, "detectorWardsPlaced must be positive"))
                 .doOnNext(obj -> checkArgument(wardsKilled >= 0, "wardKills must be positive"))
                 .doOnNext(obj -> checkArgument(wardsPlaced >= 0, "wardsPlaced must be positive"))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item0)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item1)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item2)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item3)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item4)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item5)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
-                .flatMap(obj -> template.opsForValue().get(getItemKey(item6)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item0)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary" + getItemKey(item0)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item1)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item1)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item2)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item2)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item3)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item3)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item4)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item4)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item5)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item5)))))
+                .flatMap(obj -> template.opsForValue().get(getItemKey(item6)).switchIfEmpty(Mono.error(new IllegalArgumentException("itemId must be in permitted boundary"+ getItemKey(item6)))))
                 .flatMap(obj -> template.opsForValue().get(getChampionKey(championId)).switchIfEmpty(Mono.error(new IllegalArgumentException("championId must be in permitted boundary"))))
                 .flatMap(obj -> template.opsForValue().get(getSpellKey(summoner1Id)).switchIfEmpty(Mono.error(new IllegalArgumentException("spellId must be in permitted boundary"))))
                 .flatMap(obj -> template.opsForValue().get(getSpellKey(summoner2Id)).switchIfEmpty(Mono.error(new IllegalArgumentException("spellId must be in permitted boundary"))))

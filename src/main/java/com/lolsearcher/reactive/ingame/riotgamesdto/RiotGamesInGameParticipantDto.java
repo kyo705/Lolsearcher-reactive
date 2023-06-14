@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.ingame.riotgamesdto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,12 +22,12 @@ public class RiotGamesInGameParticipantDto {
     long teamId;
     String summonerName;
     String summonerId;
-    long spell1Id;
-    long spell2Id;
+    int spell1Id;
+    int spell2Id;
     RiotGamesInGamePerksDto perks;
     List<RiotGamesInGameCustomizationObjectDto> gameCustomizationObjects;
 
-    public Mono<RiotGamesInGameParticipantDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesInGameParticipantDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just(" ")
                 .doOnNext(obj -> checkArgument(summonerName.length() >= SUMMONER_NAME_MIN_LENGTH && summonerName.length() <= SUMMONER_NAME_MAX_LENGTH,

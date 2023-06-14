@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.ingame.riotgamesdto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class RiotGamesInGameDto {
     List<RiotGamesInGameBannedChampionDto> bannedChampions;
     List<RiotGamesInGameParticipantDto> participants;
 
-    public Mono<RiotGamesInGameDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesInGameDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just(" ")
                 .flatMap(obj -> template.opsForValue().get(getQueueKey(gameQueueConfigId)).switchIfEmpty(Mono.error(new IllegalArgumentException("gameQueueConfigId must be in permitted boundary"))))

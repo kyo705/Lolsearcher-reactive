@@ -3,7 +3,7 @@ package com.lolsearcher.reactive.match.riotgamesdto;
 import com.lolsearcher.reactive.match.riotgamesdto.team.RiotGamesTeamDto;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -31,7 +31,7 @@ public class RiotGamesMatchDto implements Serializable {
     private List<RiotGamesTeamDto> teams;
     private String tournamentCode;
 
-    public Mono<RiotGamesMatchDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesMatchDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just("DUMMY")
                 .flatMap(obj -> template.opsForValue()

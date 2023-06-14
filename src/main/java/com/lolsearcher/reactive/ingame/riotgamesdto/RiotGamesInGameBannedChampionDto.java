@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.ingame.riotgamesdto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -16,7 +16,7 @@ public class RiotGamesInGameBannedChampionDto {
     long championId;
     long teamId;
 
-    public Mono<RiotGamesInGameBannedChampionDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesInGameBannedChampionDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just(" ")
                 .doOnNext(empty -> checkArgument(pickTurn >= 1 && pickTurn <= 10, "pickTurn must be between 1 and 10"))

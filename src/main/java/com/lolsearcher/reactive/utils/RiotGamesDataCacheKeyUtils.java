@@ -13,7 +13,7 @@ public class RiotGamesDataCacheKeyUtils {
         return CHAMPION_KEY_PREFIX + championId;
     }
 
-    public static String getItemKey(long item) {
+    public static String getItemKey(int item) {
 
         return ITEM_KEY_PREFIX + item;
     }
@@ -23,7 +23,7 @@ public class RiotGamesDataCacheKeyUtils {
         return QUEUE_KEY_PREFIX + queueId;
     }
 
-    public static String getSpellKey(long spell) {
+    public static String getSpellKey(int spell) {
 
         return SPELL_KEY_PREFIX + spell;
     }

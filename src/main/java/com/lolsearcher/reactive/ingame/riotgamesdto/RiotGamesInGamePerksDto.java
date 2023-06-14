@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.ingame.riotgamesdto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +18,7 @@ public class RiotGamesInGamePerksDto {
     Short perkStyle;
     Short perkSubStyle;
 
-    public Mono<RiotGamesInGamePerksDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesInGamePerksDto> validate(ReactiveStringRedisTemplate template) {
 
         return Flux.fromIterable(perkIds).concatWith( Flux.just(perkStyle, perkSubStyle))
                 .flatMap(perkId -> template.opsForValue().get(getRuneKey(perkId)).switchIfEmpty(Mono.error(new IllegalArgumentException("rune id must be in permitted boundary"))))

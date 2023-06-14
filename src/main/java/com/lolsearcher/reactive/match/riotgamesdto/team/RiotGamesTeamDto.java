@@ -2,7 +2,7 @@ package com.lolsearcher.reactive.match.riotgamesdto.team;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
@@ -18,7 +18,7 @@ public class RiotGamesTeamDto implements Serializable {
     private short teamId;
     private boolean win;
 
-    public Mono<RiotGamesTeamDto> validate(ReactiveRedisTemplate<String, Object> template) {
+    public Mono<RiotGamesTeamDto> validate(ReactiveStringRedisTemplate template) {
 
         return Mono.just("DUMMY")
                 .doOnNext(obj -> checkArgument(teamId == 100 || teamId == 200, "teamId must be in permitted boundary"))

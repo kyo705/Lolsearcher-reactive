@@ -6,7 +6,7 @@ import com.lolsearcher.reactive.match.riotgamesdto.RiotGamesTotalMatchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.codec.DecodingException;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,7 +25,7 @@ import static com.lolsearcher.reactive.match.MatchConstant.*;
 @Component
 public class WebClientMatchAPI implements MatchAPI {
 
-    private final ReactiveRedisTemplate<String, Object> template;
+    private final ReactiveStringRedisTemplate template;
     private final WebClient asiaWebClient;
     @Value("${lolsearcher.riot_api_key}") private String key;
 
