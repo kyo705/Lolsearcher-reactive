@@ -6,14 +6,13 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static com.lolsearcher.reactive.utils.RiotGamesDataCacheKeyUtils.getRuneKey;
 
 @Getter
 @Setter
-public class RiotGamesMatchPerkStyleDto implements Serializable {
+public class RiotGamesMatchPerkStyleDto {
 	private String description;
 	private List<RiotGamesMatchPerkStyleSelectionDto> selections;
 	private short style;

@@ -6,7 +6,7 @@ import com.lolsearcher.reactive.ingame.riotgamesdto.RiotGamesInGameDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.codec.DecodingException;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +20,7 @@ import static com.lolsearcher.reactive.ingame.InGameConstant.RIOTGAMES_INGAME_WI
 @Component
 public class WebClientInGameAPI implements InGameAPI {
 
-    private final ReactiveRedisTemplate<String, Object> template;
+    private final ReactiveStringRedisTemplate template;
     private final WebClient koreaWebClient;
     @Value("${lolsearcher.riot_api_key}") private String key;
 

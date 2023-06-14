@@ -5,11 +5,9 @@ import lombok.Setter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
-public class RiotGamesTotalMatchDto implements Serializable {
+public class RiotGamesTotalMatchDto {
     private RiotGamesMatchMetadataDto metadata = new RiotGamesMatchMetadataDto();
     private RiotGamesMatchDto info = new RiotGamesMatchDto();
 

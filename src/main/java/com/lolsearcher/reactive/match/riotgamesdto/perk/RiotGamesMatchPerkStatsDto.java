@@ -5,13 +5,11 @@ import lombok.Setter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
-
 import static com.lolsearcher.reactive.utils.RiotGamesDataCacheKeyUtils.getRuneKey;
 
 @Getter
 @Setter
-public class RiotGamesMatchPerkStatsDto implements Serializable {
+public class RiotGamesMatchPerkStatsDto {
 	private Short defense;
 	private Short flex;
 	private Short offense;

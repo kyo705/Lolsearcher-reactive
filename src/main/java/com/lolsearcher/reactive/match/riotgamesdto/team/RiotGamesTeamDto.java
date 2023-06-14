@@ -5,14 +5,13 @@ import lombok.Setter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 @Setter
-public class RiotGamesTeamDto implements Serializable {
+public class RiotGamesTeamDto {
     private List<RiotGamesTeamBanDto> bans;
     private RiotGamesTeamObjectivesDto objectives;
     private short teamId;

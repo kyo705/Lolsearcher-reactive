@@ -6,8 +6,6 @@ import lombok.Setter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MAX_LENGTH;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_ID_MIN_LENGTH;
@@ -16,7 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Getter
 @Setter
-public class RiotGamesParticipantDto implements Serializable {
+public class RiotGamesParticipantDto {
     private Short assists;
     private Byte baronKills;
     private Byte bountyLevel;

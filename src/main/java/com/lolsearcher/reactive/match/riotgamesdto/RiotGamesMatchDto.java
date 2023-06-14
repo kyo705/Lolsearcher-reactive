@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -14,7 +13,7 @@ import static com.lolsearcher.reactive.utils.RiotGamesDataCacheKeyUtils.getQueue
 
 @Getter
 @Setter
-public class RiotGamesMatchDto implements Serializable {
+public class RiotGamesMatchDto {
     private long gameCreation;
     private long gameDuration;
     private long gameEndTimestamp;

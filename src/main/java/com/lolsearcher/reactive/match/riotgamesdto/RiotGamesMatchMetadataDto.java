@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -13,7 +12,7 @@ import static com.lolsearcher.reactive.summoner.SummonerConstant.PUUID_MIN_LENGT
 
 @Getter
 @Setter
-public class RiotGamesMatchMetadataDto implements Serializable {
+public class RiotGamesMatchMetadataDto {
     private String dataVersion;
     private String matchId;
     private List<String> participants;   // puuid list

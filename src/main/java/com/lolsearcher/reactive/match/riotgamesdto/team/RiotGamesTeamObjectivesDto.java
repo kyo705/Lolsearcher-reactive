@@ -3,11 +3,9 @@ package com.lolsearcher.reactive.match.riotgamesdto.team;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
-public class RiotGamesTeamObjectivesDto implements Serializable {
+public class RiotGamesTeamObjectivesDto {
     private RiotGamesTeamObjectiveDto baron;
     private RiotGamesTeamObjectiveDto champion;
     private RiotGamesTeamObjectiveDto dragon;
