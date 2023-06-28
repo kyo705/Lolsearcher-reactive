@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.lolsearcher.reactive.config.ReactiveKafkaProducerConfig.MQ_THREAD_PREFIX;
 import static com.lolsearcher.reactive.match.MatchConstant.KR_REGION_PREFIX;
 import static java.util.Objects.requireNonNull;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -125,6 +128,7 @@ public class MatchService {
                 .concatWith(failMatchIdFlow)
                 .concatWith(remainMatchIdRangeFlow)
                 .doOnComplete(() -> createLastMatchIdFlow(totalMatchRecord).subscribe()) //위의 플로우들이 정상적으로 완료된 경우 마지막으로 유저 데이터 갱신
+                .subscribeOn(Schedulers.newParallel(MQ_THREAD_PREFIX))
                 .subscribe();
     }
 

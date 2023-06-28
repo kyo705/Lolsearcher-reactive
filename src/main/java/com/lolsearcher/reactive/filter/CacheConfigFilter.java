@@ -17,7 +17,7 @@ public class CacheConfigFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofMinutes(5 /* 한 게임당 최소 5분 */)));
+        exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofMinutes(1 /* 한 게임당 최소 5분 */)));
         //exchange.getResponse().getHeaders().setCacheControl("public");
 
         return chain.filter(exchange);

@@ -25,6 +25,8 @@ import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_TEMPLA
 @Configuration
 public class ReactiveKafkaProducerConfig {
 
+    public static final String MQ_THREAD_PREFIX = "MQ_Thread";
+
     @Value("${lolsearcher.kafka.bootstrap-server}")
     private String BOOTSTRAP_SERVER;
 

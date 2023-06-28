@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import static com.lolsearcher.reactive.config.ReactiveKafkaProducerConfig.MQ_THREAD_PREFIX;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.SUMMONER_TOPIC;
 
 @Slf4j
@@ -29,7 +31,9 @@ public class KafkaSummonerMessageQueue implements SummonerMessageQueue {
                     log.error(e.getMessage());
                     log.error("카프카에 저장 실패... Key : '{}', Value : '{}' ", key, summoner);
                     return Mono.error(new RuntimeException(e));
-                }).subscribe();
+                })
+                .subscribeOn(Schedulers.newParallel(MQ_THREAD_PREFIX))
+                .subscribe();
     }
 
     @Override
@@ -46,6 +50,8 @@ public class KafkaSummonerMessageQueue implements SummonerMessageQueue {
                     log.error(e.getMessage());
                     log.error("카프카에 저장 실패... Value : '{}'", summoner);
                     return Mono.error(new RuntimeException(e));
-                }).subscribe();
+                })
+                .subscribeOn(Schedulers.newParallel(MQ_THREAD_PREFIX))
+                .subscribe();
     }
 }
