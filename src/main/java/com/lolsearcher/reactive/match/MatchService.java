@@ -3,21 +3,15 @@ package com.lolsearcher.reactive.match;
 import com.lolsearcher.reactive.errors.exception.IllegalRiotGamesResponseDataException;
 import com.lolsearcher.reactive.match.dto.MatchDto;
 import com.lolsearcher.reactive.match.dto.SummaryMemberDto;
-import com.lolsearcher.reactive.match.riotgamesdto.RiotGamesTotalMatchDto;
 import com.lolsearcher.reactive.utils.ResponseFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.lolsearcher.reactive.config.ReactiveKafkaProducerConfig.MQ_THREAD_PREFIX;
 import static com.lolsearcher.reactive.match.MatchConstant.KR_REGION_PREFIX;
+import static com.lolsearcher.reactive.match.MatchConstant.MATCH_DEFAULT_COUNT;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
@@ -35,12 +29,17 @@ public class MatchService {
         TotalMatchRecordDto totalMatchRecord = initializeTotalMatchRecord(request);
 
         return matchAPI.findMatchIds(request.getPuuid(), request.getLastMatchId(), request.getCount(), request.getQueueId())
+                .take(MATCH_DEFAULT_COUNT)
                 .doOnNext(matchId->setLastMatchId(matchId, totalMatchRecord))
-                .flatMap(matchId -> matchAPI.findMatch(matchId).onErrorResume(e -> handle429Exception(e, totalMatchRecord)))
+                .flatMap(matchAPI::findMatch)
+                .onErrorContinue(this::handle429Exception)
                 .map(ResponseFactory::getMatchDto)
-                .doOnNext(match -> totalMatchRecord.getSuccessMatches().add(match))
+                .doOnNext(matchMessageQueue::sendSuccessMatch)
                 .filter(match -> checkRequestCondition(match, request))
-                .doOnComplete(() -> sendToMessageQueue(totalMatchRecord));
+                .doOnComplete(() -> {
+                    matchMessageQueue.sendRemainMatchIds(totalMatchRecord.getPuuId(), totalMatchRecord.getRemainMatchIdRange());
+                    matchMessageQueue.sendLastMatchId(totalMatchRecord.getSummonerId(), totalMatchRecord.getLastMatchId());
+                });
     }
 
     private TotalMatchRecordDto initializeTotalMatchRecord(MatchRequest request) {
@@ -49,16 +48,11 @@ public class MatchService {
         String summonerId = request.getSummonerId();
         String summonerLastMatchId = request.getLastMatchId();
 
-        List<MatchDto> successMatches = new ArrayList<>();
-        List<String> failMatchIds = new ArrayList<>();
-
         RemainMatchIdRange remainMatchIdRange = new RemainMatchIdRange();
         remainMatchIdRange.setEndRemainMatchId(summonerLastMatchId);
 
         TotalMatchRecordDto totalMatchRecord = new TotalMatchRecordDto();
         totalMatchRecord.setPuuId(puuId);
-        totalMatchRecord.setSuccessMatches(successMatches);
-        totalMatchRecord.setFailMatchIds(failMatchIds);
         totalMatchRecord.setSummonerId(summonerId);
         totalMatchRecord.setRemainMatchIdRange(remainMatchIdRange);
 
@@ -67,14 +61,14 @@ public class MatchService {
 
     private void setLastMatchId(String matchId, TotalMatchRecordDto totalMatchRecord){
 
-        if(totalMatchRecord.getLastMatchId() == null){
+        if(totalMatchRecord.getLastMatchId() == null){ //최신 matchId를 유저의 lastMatchId로 설정
             totalMatchRecord.setLastMatchId(matchId);
         }
         RemainMatchIdRange remainMatchIdRange = totalMatchRecord.getRemainMatchIdRange();
         remainMatchIdRange.setStartRemainMatchId(matchId);
     }
 
-    private Mono<RiotGamesTotalMatchDto> handle429Exception(Throwable e, TotalMatchRecordDto totalMatchRecord) {
+    private void handle429Exception(Throwable e, Object obj) {
 
         if(e instanceof WebClientResponseException){
             WebClientResponseException wcex = (WebClientResponseException) e;
@@ -84,15 +78,16 @@ public class MatchService {
 
                 log.info("너무 많은 요청으로 인해 MATCH_ID : {} 요청 실패", matchId);
                 log.info(wcex.getMessage());
-                totalMatchRecord.getFailMatchIds().add(matchId);
-                return Mono.empty();
+                matchMessageQueue.sendFailMatchId(matchId);
+                return;
             }
             else if(wcex.getStatusCode() == NOT_FOUND){
                 log.error(e.getMessage());
-                return Mono.error(new IllegalRiotGamesResponseDataException(String.format("matchId : %s is not exist", matchId)));
+                throw  new IllegalRiotGamesResponseDataException(String.format("matchId : %s is not exist", matchId));
             }
         }
-        return Mono.error(e);
+        log.error(e.getMessage());
+        throw (RuntimeException) e;
     }
 
     private String extractMatchId(String message) {
@@ -114,55 +109,5 @@ public class MatchService {
             }
         }
         return false;
-    }
-
-    private void sendToMessageQueue(TotalMatchRecordDto totalMatchRecord) {
-
-        Flux<Void> successMatchFlow = createSuccessMatchFlow(totalMatchRecord);
-        Flux<Void> failMatchIdFlow = createFailMatchIdFlow(totalMatchRecord);
-        Mono<Void> remainMatchIdRangeFlow = createRemainMatchIdRangeFlow(totalMatchRecord);
-
-        //위의 플로우들을 합치고 subscribe 시도
-        Flux.empty()
-                .concatWith(successMatchFlow)
-                .concatWith(failMatchIdFlow)
-                .concatWith(remainMatchIdRangeFlow)
-                .doOnComplete(() -> createLastMatchIdFlow(totalMatchRecord).subscribe()) //위의 플로우들이 정상적으로 완료된 경우 마지막으로 유저 데이터 갱신
-                .subscribeOn(Schedulers.newParallel(MQ_THREAD_PREFIX))
-                .subscribe();
-    }
-
-    private Flux<Void> createSuccessMatchFlow(TotalMatchRecordDto totalMatchRecord) {
-
-        if(totalMatchRecord.getSuccessMatches().isEmpty()){
-            return Flux.empty();
-        }
-        return Flux.fromIterable(totalMatchRecord.getSuccessMatches())
-                .flatMap(matchMessageQueue::sendSuccessMatch);
-    }
-
-    private Flux<Void> createFailMatchIdFlow(TotalMatchRecordDto totalMatchRecord) {
-
-        if(totalMatchRecord.getFailMatchIds().isEmpty()){
-            return Flux.empty();
-        }
-        return Flux.fromIterable(totalMatchRecord.getFailMatchIds())
-                .flatMap(matchMessageQueue::sendFailMatchId);
-    }
-
-    private Mono<Void> createRemainMatchIdRangeFlow(TotalMatchRecordDto totalMatchRecord) {
-
-        String puuId = totalMatchRecord.getPuuId();
-        RemainMatchIdRange remainMatchIdRange = totalMatchRecord.getRemainMatchIdRange();
-
-        return matchMessageQueue.sendRemainMatchIds(puuId, remainMatchIdRange);
-    }
-
-    private Mono<Void> createLastMatchIdFlow(TotalMatchRecordDto totalMatchRecord) {
-
-        String summonerId = totalMatchRecord.getSummonerId();
-        String lastMatchId = totalMatchRecord.getLastMatchId();
-
-        return matchMessageQueue.sendLastMatchId(summonerId, lastMatchId);
     }
 }
