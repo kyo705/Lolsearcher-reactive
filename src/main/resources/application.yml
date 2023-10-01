@@ -3,7 +3,7 @@ server:
 
 lolsearcher:
   kafka:
-    bootstrap-server: ${bootstrap-server}
+    bootstrap-server: ${kafka.bootstrap-server}
   riot_api_key: ${riot_api_key}
   jwt:
     secret: gsgsg
@@ -11,8 +11,8 @@ lolsearcher:
     kr-base-url: https://kr.api.riotgames.com
     asia-base-url: https://asia.api.riotgames.com
   redis:
-    host: localhost
-    port: 6379
+    host: ${redis.host}
+    port: ${redis.port}
   cache:
     summoner:
       ttl: 600
