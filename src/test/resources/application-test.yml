@@ -5,12 +5,22 @@ lolsearcher:
   kafka:
     bootstrap-server: localhost:9092
   riot_api_key: 12345
+  jwt:
+    secret: gsgsg
   webclient:
-    kr-base-url: http://localhost:15678
-    asia-base-url: http://localhost:15678
+    kr-base-url: http://localhost:8900
+    asia-base-url: http://localhost:8900
   redis:
     host: localhost
     port: 6379
   cache:
+    summoner:
+      ttl: 600
+    rank:
+      ttl: 3600
     match:
-      ttl: 1  # 1sec
+      ttl: 3600  # 1h
+    ingame:
+      ttl: 120 # 2min
+    abuser:
+      ttl: 1 # 1day

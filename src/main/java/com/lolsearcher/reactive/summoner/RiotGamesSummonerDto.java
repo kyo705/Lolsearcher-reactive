@@ -1,5 +1,6 @@
 package com.lolsearcher.reactive.summoner;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.lolsearcher.reactive.summoner.SummonerConstant.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@EqualsAndHashCode
 @Getter
 @Setter
 public class RiotGamesSummonerDto {

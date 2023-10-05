@@ -1,5 +1,10 @@
 package com.lolsearcher.reactive.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.api.RedissonReactiveClient;
+import org.redisson.config.Config;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +20,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class ReactiveRedisConfig {
 
+    private static final String REDISSON_URL_PREFIX = "redis://";
+    public static final String LOCK_KEY_SUFFIX = "_lock_key";
     @Value("${lolsearcher.redis.host}")
     private String host;
     @Value("${lolsearcher.redis.port}")
@@ -44,5 +51,25 @@ public class ReactiveRedisConfig {
     public ReactiveStringRedisTemplate reactiveStringRedisTemplate(ReactiveRedisConnectionFactory factory) {
 
         return new ReactiveStringRedisTemplate(factory);
+    }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer().setAddress(REDISSON_URL_PREFIX + host + ":" + port);
+
+        return Redisson.create(config);
+    }
+
+    @Bean
+    public RedissonReactiveClient redissonReactiveClient(RedissonClient redissonClient) {
+
+        return redissonClient.reactive();
+    }
+
+    @Bean
+    public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redissonClient){
+
+        return new RedissonConnectionFactory(redissonClient);
     }
 }

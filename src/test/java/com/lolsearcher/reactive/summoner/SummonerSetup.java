@@ -3,7 +3,7 @@ package com.lolsearcher.reactive.summoner;
 import java.util.List;
 
 public class SummonerSetup {
-    protected static String getRiotGamesSummonerDto() {
+    public static String getRiotGamesSummonerDto() {
 
         return "{\n" +
                 "    \"id\": \"vI8IEER7jJGbdMOw6_1ciINz60FHxhL2jIMJY1SyCO_Bucw\",\n" +
@@ -16,7 +16,7 @@ public class SummonerSetup {
                 "}";
     }
 
-    protected static String validSummonerUpdateRequest() {
+    public static String validSummonerUpdateRequest() {
 
         return "{\n" +
                 "    \"summonerIds\" : [\n" +
@@ -27,7 +27,7 @@ public class SummonerSetup {
                 "}";
     }
 
-    protected static List<String> getRiotGamesSummoners() {
+    public static List<String> getRiotGamesSummoners() {
 
         return List.of(
                 "{\n" +
