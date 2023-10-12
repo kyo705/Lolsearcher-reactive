@@ -58,10 +58,9 @@ public class ReactiveRedisCacheAop {
 
         if (rawReturnType.isAssignableFrom(Mono.class)) {
 
-            return lock.tryLock()
-                    .flatMap(t -> lock.isLocked())
-                    .doOnSuccess(isLocked -> System.out.println("lock before " + isLocked))
-                    .flatMap(empty -> reactiveRedisTemplate
+            return lock.isLocked()
+                    .doOnNext(isLocked -> lock.lock().subscribe())
+                    .flatMap(isLocked -> reactiveRedisTemplate
                             .opsForValue()
                             .get(compKey)
                             .switchIfEmpty(methodMonoResponseToCache(joinPoint, compKey, time))
@@ -73,13 +72,13 @@ public class ReactiveRedisCacheAop {
                                 }
                             })
                     )
-                    .doFinally(result -> lock.forceUnlock().doOnNext(t -> System.out.println(t + " 언락 성공")).subscribe());
+                    .doFinally(result -> lock.forceUnlock().subscribe());
 
         } else if (rawReturnType.isAssignableFrom(Flux.class)) {
 
             return lock.isLocked()
-                    .doOnSuccess(isLocked -> lock.lock().subscribe())
-                    .flatMapMany(empty -> reactiveRedisTemplate
+                    .doOnNext(isLocked -> lock.lock().subscribe())
+                    .flatMapMany(isLocked -> reactiveRedisTemplate
                             .opsForValue()
                             .get(compKey)
                             .switchIfEmpty(methodFluxResponseToCache(joinPoint, compKey, time))
@@ -96,11 +95,10 @@ public class ReactiveRedisCacheAop {
                                 }
                             })
                     )
-                    .doOnNext(result -> lock.unlock().subscribe());
+                    .doOnNext(result -> lock.forceUnlock().subscribe());
         }
         throw new RuntimeException("ReactiveRedisCacheable : 매핑된 메소드의 리턴 타입이 Mono 와 Flux 외에는 지원되지 않습니다.");
     }
-
 
 
     private Mono<String> methodMonoResponseToCache(ProceedingJoinPoint joinPoint, String key, Duration time) {

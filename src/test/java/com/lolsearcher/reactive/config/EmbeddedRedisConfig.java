@@ -9,7 +9,7 @@ import javax.annotation.PreDestroy;
 @TestConfiguration
 public class EmbeddedRedisConfig {
 
-    private final RedisServer redisServer = new RedisServer();
+    private final RedisServer redisServer = new RedisServer(9595);
 
     @PostConstruct
     public void postConstruct() {

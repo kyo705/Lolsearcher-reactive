@@ -12,15 +12,15 @@ lolsearcher:
     asia-base-url: http://localhost:8900
   redis:
     host: localhost
-    port: 6379
+    port: 9595
   cache:
     summoner:
-      ttl: 600
+      ttl: 2
     rank:
-      ttl: 3600
+      ttl: 2
     match:
-      ttl: 3600  # 1h
+      ttl: 2  # 1h
     ingame:
-      ttl: 120 # 2min
+      ttl: 2 # 2min
     abuser:
-      ttl: 1 # 1day
+      ttl: 2 # 1day
